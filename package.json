@@ -1,6 +1,6 @@
 {
   "name": "pipelight",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Type definition for Pipelight CICD Config file easy scripting",
   "main": "mod.ts",
   "module": "mod.ts",
@@ -22,5 +22,5 @@
     "type": "git",
     "url": "https://gitea.com/pipelight/pipelight"
   },
-  "homepage": "https://doc.pipeight.areskul.com"
+  "homepage": "https://doc.pipelight.areskul.com"
 }
