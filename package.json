@@ -1,0 +1,26 @@
+{
+  "name": "pipelight",
+  "version": "1.0.4",
+  "description": "Type definition for Pipelight CICD Config file easy scripting",
+  "main": "mod.ts",
+  "module": "mod.ts",
+  "types": "mod.d.ts",
+  "keywords": [
+    "cicd",
+    "bash",
+    "bash wrapper",
+    "git hooks",
+    "simple",
+    "easy",
+    "deployment",
+    "typescript"
+  ],
+  "author": "Areskul <areskul@areskul.com>",
+  "licence": "MIT",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://gitea.com/pipelight/pipelight"
+  },
+  "homepage": "https://doc.pipeight.areskul.com"
+}
