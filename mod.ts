@@ -49,6 +49,7 @@ type Action =
   | "pre-push"
   | "manual";
 
+export { exec } from "helpers";
 export type {
   Config,
   Pipeline,
