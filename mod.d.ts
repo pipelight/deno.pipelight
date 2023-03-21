@@ -29,5 +29,5 @@ declare type Trigger = {
     actions?: Action[];
 };
 declare type Action = "applypatch-msg" | "pre-applypatch" | "post-apply-patch" | "pre-commit" | "prepare-commit-msg" | "commit-msg" | "post-commit" | "pre-rebase" | "post-checkout" | "post-merge" | "pre-receive" | "update" | "post-receive" | "post-update" | "pre-auto-gc" | "post-rewrite" | "pre-push" | "manual";
-export { exec } from "helpers.ts";
+export { exec } from "helpers";
 export type { Config, Pipeline, StepOrParallel, Step, Parallel, Action, Trigger, };
