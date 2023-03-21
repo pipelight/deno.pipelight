@@ -1,8 +1,8 @@
 {
   "name": "pipelight",
-  "version": "1.4.24",
+  "version": "1.4.30",
   "description": "Type definition for Pipelight",
-  "main": "mod.ts",
+  "main": "mod.js",
   "module": "mod.ts",
   "types": "mod.d.ts",
   "keywords": [

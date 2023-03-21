@@ -1,2 +1,3 @@
 #!/bin/sh
-tsc -d mod.ts
+# Typescript to Js and declaration files
+tsc
