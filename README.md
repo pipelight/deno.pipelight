@@ -11,3 +11,9 @@ And trigger them automatically on git action.
 
 This repo only host types for better pipeline writting.
 For the full software, check documentation.
+
+## Build
+
+```sh
+tsc
+```

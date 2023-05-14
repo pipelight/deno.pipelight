@@ -1,5 +1,4 @@
-// @ts-ignore
-import { Pipeline, Step } from "../mod.ts";
+import { Pipeline, Step } from "../types/index.ts";
 
 interface Port {
   out: number;
@@ -157,24 +156,6 @@ export class Docker {
     return commands;
   }
 }
-
-// example
-export const pipeline = (name: string, fn: () => Step[]): Pipeline => {
-  const steps = fn();
-  const p: Pipeline = {
-    name,
-    steps,
-  };
-  return p;
-};
-export const step = (name: string, fn: () => string[]): Step => {
-  const commands = fn();
-  const s = {
-    name,
-    commands,
-  };
-  return s;
-};
 
 // const docker = new Docker();
 // const container = new Container({

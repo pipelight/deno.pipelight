@@ -49,8 +49,6 @@ type Action =
   | "pre-push"
   | "manual";
 
-// @ts-ignore
-export { exec } from "./helpers.ts";
 export type {
   Config,
   Pipeline,
