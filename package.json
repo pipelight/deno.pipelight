@@ -2,9 +2,9 @@
   "name": "pipelight",
   "version": "1.4.30",
   "description": "Type definition for Pipelight",
-  "main": "mod.js",
-  "module": "mod.ts",
-  "types": "mod.d.ts",
+  "main": "src/mod.js",
+  "module": "src/mod.ts",
+  "types": "src/mod.d.ts",
   "keywords": [
     "cicd",
     "bash",

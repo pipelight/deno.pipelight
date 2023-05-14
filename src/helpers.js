@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.exec = void 0;
 const exec = async (cmd) => {
     const process = new Deno.Command("sh", {
         args: ["-c", cmd],
@@ -15,4 +12,4 @@ const exec = async (cmd) => {
         return err;
     }
 };
-exports.exec = exec;
+export { exec };
