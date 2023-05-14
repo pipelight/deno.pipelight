@@ -1,3 +1,4 @@
+import type { Pipeline, Step } from "./types/index.ts";
 // Execute a bash string through deno
 export const exec = async (cmd: string) => {
   const process = new Deno.Command("sh", {
@@ -11,6 +12,15 @@ export const exec = async (cmd: string) => {
   } else {
     return err;
   }
+};
+// SSh helper
+export interface SshParams {
+  host: string;
+  cmd: string;
+}
+export const ssh = (params: SshParams) => {
+  const suffix = "ssh -o TCPKeepAlive=no -C";
+  return `${suffix} ${params.host} "${params.cmd}"`;
 };
 
 // Composition api

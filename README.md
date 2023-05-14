@@ -1,18 +1,62 @@
-# Pipelight
+# Pipelight Helpers
 
 A Lightweight CI/CD tool.
-
-Write pipelines in Typescript.
-And trigger them automatically on git action.
-
 [Full Documentation](https://pipelight.dev).
 
-## Not the full sofware
+## Types
 
-This repo only host types for better pipeline writting.
-For the full software, check documentation.
+Export types to create a pipeline object.
 
-## Build
+## Docker
+
+### Usage
+
+Create ana object with your docker configuration.
+With informations about images, containers, volumes and networks.
+
+```ts
+const params: DockerParams = {
+  containers: [
+    {
+      name: "my_container",
+      image: {
+        name: "node:latest",
+      },
+    },
+  ],
+};
+const docker = new Docker(params);
+```
+
+Insert the commands in your pipeline.
+
+```ts
+const pipeline = {
+  name: "deploy",
+  steps: [
+    {
+      name: "dockerize",
+      commands: docker.to_commands(),
+    },
+  ],
+};
+
+docker.to_commands();
+```
+
+Or with the composition API helpers
+
+```ts
+// create a pipeline
+pipeline("deploy", () => [
+  // create a step
+  step("dockerize", () => docker.to_commands()),
+]);
+```
+
+## NPM
+
+### Build
 
 ```sh
 tsc

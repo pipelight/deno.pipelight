@@ -1,6 +1,6 @@
 import type { Config, Pipeline } from "npm:pipelight";
-import { Docker, Container, Network } from "./src/framework/docker.ts";
-import { pipeline, step } from "./src/framework/docker.ts";
+import { Docker, Container, Network } from "./src/docker/index.ts";
+import { pipeline, step } from "./src/helpers.ts";
 
 const version = "production";
 const service = "deno";

@@ -1,11 +1,17 @@
-import { Pipeline, Step } from "../types/index.ts";
+import type { SshParams } from "../helpers.ts";
+import { ssh } from "../helpers.ts";
 
 interface Port {
   out: number;
   in: number;
 }
 
-export class Network {
+export interface NetworkParams {
+  id?: string;
+  name: string;
+  subnet?: string;
+}
+export class Network implements NetworkParams {
   id?: string;
   name: string;
   subnet?: string;
@@ -14,12 +20,11 @@ export class Network {
   }
 }
 
-interface VolumeParams {
+export interface VolumeParams {
   id?: string;
   name: string;
   subnet?: string;
 }
-
 export class Volume implements VolumeParams {
   id?: string;
   name: string;
@@ -37,12 +42,11 @@ export class Volume implements VolumeParams {
   }
 }
 
-interface ImageParams {
+export interface ImageParams {
   id?: string;
   file?: string;
   name: string;
 }
-
 export class Image implements ImageParams {
   id?: string;
   file?: string;
@@ -60,9 +64,16 @@ export class Image implements ImageParams {
     cmds.push(str);
     return cmds;
   }
+  send(host: string): string[] {
+    const cmds: string[] = [];
+    let str = `docker save ${this.name}`;
+    str += " | " + ssh({ host, cmd: "docker load" });
+    cmds.push(str);
+    return cmds;
+  }
 }
 
-interface ContainerParams {
+export interface ContainerParams {
   id?: string;
   ip?: string;
   network?: string;
@@ -70,7 +81,6 @@ interface ContainerParams {
   ports?: Port[];
   image: ImageParams;
 }
-
 export class Container implements ContainerParams {
   id?: string;
   ip?: string;
@@ -104,13 +114,12 @@ export class Container implements ContainerParams {
   }
 }
 
-interface DockerParams {
+export interface DockerParams {
   id?: string;
-  networks?: Network[];
+  networks?: NetworkParams[];
   containers: ContainerParams[];
-  volumes?: Volume[];
+  volumes?: VolumeParams[];
 }
-
 export class Docker {
   id?: string;
   networks: Network[] = [];
@@ -156,8 +165,3 @@ export class Docker {
     return commands;
   }
 }
-
-// const docker = new Docker();
-// const container = new Container({
-//   volume: "",
-// docker.container.push(container);
