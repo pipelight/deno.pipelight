@@ -1,6 +1,6 @@
 import type { Config, Pipeline } from "npm:pipelight";
 import { Docker, Container, Network } from "./src/docker/index.ts";
-import { pipeline, step } from "./src/helpers.ts";
+import { pipeline, step, ssh } from "./src/helpers.ts";
 
 const version = "production";
 const service = "deno";
@@ -29,8 +29,10 @@ const docker = new Docker({
 // docker.networks.push(new Network("my_network"));
 
 const compositionPipe = pipeline("composition", () => [
-  step("test", () => ["ls", "cmd"]),
-  step("classes", () => docker.to_commands()),
+  step("test", () => ["ls", "pwd"]),
+  step("classes", () => ssh(["localhost"], docker.remove()), {
+    non_blocking: true,
+  }),
 ]);
 
 const config: Config = {

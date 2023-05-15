@@ -1,4 +1,3 @@
-import type { SshParams } from "../helpers.ts";
 import { ssh } from "../helpers.ts";
 
 interface Port {
@@ -10,25 +9,36 @@ export interface NetworkParams {
   id?: string;
   name: string;
   subnet?: string;
+  driver?: string;
 }
 export class Network implements NetworkParams {
   id?: string;
   name: string;
   subnet?: string;
+  driver?: string;
   constructor(name: string) {
     this.name = name;
+  }
+  create(): string[] {
+    const cmds: string[] = [];
+    let str = `docker network create \n`;
+    str += `--subnet=${this.subnet}`;
+    if (this.driver) {
+      str += `--driver ${this.driver} \n `;
+    }
+    str += `${this.name}`;
+    cmds.push(str);
+    return cmds;
   }
 }
 
 export interface VolumeParams {
   id?: string;
   name: string;
-  subnet?: string;
 }
 export class Volume implements VolumeParams {
   id?: string;
   name: string;
-  subnet?: string;
   constructor(name: string) {
     this.name = name;
   }
@@ -67,7 +77,7 @@ export class Image implements ImageParams {
   send(host: string): string[] {
     const cmds: string[] = [];
     let str = `docker save ${this.name}`;
-    str += " | " + ssh({ host, cmd: "docker load" });
+    str += " | " + ssh([host], ["docker load"]);
     cmds.push(str);
     return cmds;
   }
@@ -132,14 +142,17 @@ export class Docker {
     if (params.volumes) params.volumes = this.volumes;
     if (params.networks) params.networks = this.networks;
   }
-  to_commands(): string[] {
-    const commands = [];
-
+  remove(): string[] {
+    const commands: string[] = [];
     if (this.containers.length != 0) {
       for (const e of this.containers) {
-        commands.push(...e.remove(), ...e.create());
+        commands.push(...e.remove());
       }
     }
+    return commands;
+  }
+  ensure(): string[] {
+    const commands: string[] = [];
     if (this.volumes.length != 0) {
       for (const e of this.volumes) {
         commands.push(...e.create());
@@ -147,19 +160,16 @@ export class Docker {
     }
     if (this.networks.length != 0) {
       for (let e of this.networks) {
-        commands.push(
-          `docker network create \
-          --driver bridge ${e.name} \
-          --subnet=${e.subnet}`
-        );
+        commands.push(...e.create());
       }
     }
-    if (this.volumes.length != 0) {
-      for (let e of this.volumes) {
-        commands.push(
-          `docker volume  \
-          --network ${e.name} .`
-        );
+    return commands;
+  }
+  create(): string[] {
+    const commands: string[] = [];
+    if (this.containers.length != 0) {
+      for (const e of this.containers) {
+        commands.push(...e.create());
       }
     }
     return commands;

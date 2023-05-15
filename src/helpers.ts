@@ -13,14 +13,19 @@ export const exec = async (cmd: string) => {
     return err;
   }
 };
-// SSh helper
-export interface SshParams {
-  host: string;
-  cmd: string;
-}
-export const ssh = (params: SshParams) => {
+
+export const ssh_wrapper = (host: string, cmd: string): string => {
   const suffix = "ssh -o TCPKeepAlive=no -C";
-  return `${suffix} ${params.host} "${params.cmd}"`;
+  return `${suffix} ${host} "${cmd}"`;
+};
+export const ssh = (hosts: string[], cmds: string[]): string[] => {
+  const commands: string[] = [];
+  for (const host of hosts) {
+    for (const cmd of cmds) {
+      commands.push(ssh_wrapper(host, cmd));
+    }
+  }
+  return commands;
 };
 
 // Composition api
@@ -32,11 +37,16 @@ export const pipeline = (name: string, fn: () => Step[]): Pipeline => {
   };
   return p;
 };
-export const step = (name: string, fn: () => string[]): Step => {
+export const step = (
+  name: string,
+  fn: () => string[],
+  options?: Omit<Step, "commands" | "name">
+): Step => {
   const commands = fn();
   const s = {
     name,
     commands,
+    ...options,
   };
   return s;
 };
