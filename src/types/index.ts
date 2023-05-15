@@ -19,6 +19,7 @@ type Parallel = {
 };
 type Step = {
   non_blocking?: boolean;
+  force?: boolean;
   name: string;
   commands: string[];
   on_failure?: StepOrParallel[];
