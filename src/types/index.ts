@@ -5,6 +5,7 @@ type Pipeline = {
   name: string;
   steps: StepOrParallel[];
   triggers?: Trigger[];
+  on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
@@ -12,16 +13,18 @@ type Pipeline = {
 
 type StepOrParallel = Step | Parallel;
 type Parallel = {
+  mode?: Mode;
   parallel: Step[];
+  on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
 };
 type Step = {
-  non_blocking?: boolean;
-  force?: boolean;
+  mode?: Mode;
   name: string;
   commands: string[];
+  on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
@@ -30,6 +33,7 @@ type Trigger = {
   branches?: string[];
   actions?: Action[];
 };
+type Mode = "stop" | "jump_next" | "continue";
 type Action =
   | "applypatch-msg"
   | "pre-applypatch"
