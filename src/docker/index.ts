@@ -1,4 +1,19 @@
 import { ssh } from "../helpers.ts";
+declare global {
+  interface Array<T> {
+    remove(): string[];
+  }
+}
+Array.prototype.remove = function (): string[] {
+  // Containers methods
+  const commands: string[] = [];
+  if (this.length != 0) {
+    for (const e of this) {
+      commands.push(...e.remove());
+    }
+  }
+  return commands;
+};
 
 interface Port {
   out: number;
@@ -16,8 +31,8 @@ export class Network implements NetworkParams {
   name: string;
   subnet?: string;
   driver?: string;
-  constructor(name: string) {
-    this.name = name;
+  constructor(params: NetworkParams) {
+    this.name = params.name;
   }
   create(): string[] {
     const cmds: string[] = [];
@@ -39,8 +54,8 @@ export interface VolumeParams {
 export class Volume implements VolumeParams {
   id?: string;
   name: string;
-  constructor(name: string) {
-    this.name = name;
+  constructor(params: VolumeParams) {
+    this.name = params.name;
   }
   create(): string[] {
     // run new container
@@ -61,8 +76,8 @@ export class Image implements ImageParams {
   id?: string;
   file?: string;
   name: string;
-  constructor(name: string) {
-    this.name = name;
+  constructor(params: ImageParams) {
+    this.name = params.name;
   }
   build(): string[] {
     const cmds: string[] = [];
@@ -105,7 +120,7 @@ export class Container implements ContainerParams {
   // Delete container
   remove(): string[] {
     const cmds: string[] = [];
-    let str = `docker stop ${this.name}` + " && " + `docker stop ${this.name}`;
+    let str = `docker stop ${this.name}` + " && " + `docker rm ${this.name}`;
     cmds.push(str);
     return cmds;
   }
@@ -127,29 +142,30 @@ export class Container implements ContainerParams {
 export interface DockerParams {
   id?: string;
   networks?: NetworkParams[];
-  containers: ContainerParams[];
+  containers?: ContainerParams[];
   volumes?: VolumeParams[];
 }
 export class Docker {
   id?: string;
   networks: Network[] = [];
-  containers: Container[] = [];
+  containers: Array<Container> = [];
   volumes: Volume[] = [];
   constructor(params: DockerParams) {
-    for (const e of params.containers) {
-      this.containers.push(new Container(e));
-    }
-    if (params.volumes) params.volumes = this.volumes;
-    if (params.networks) params.networks = this.networks;
-  }
-  remove(): string[] {
-    const commands: string[] = [];
-    if (this.containers.length != 0) {
-      for (const e of this.containers) {
-        commands.push(...e.remove());
+    if (!!params.containers) {
+      for (const e of params.containers) {
+        this.containers.push(new Container(e));
       }
     }
-    return commands;
+    if (!!params.volumes) {
+      for (const e of params.volumes) {
+        this.volumes.push(new Volume(e));
+      }
+    }
+    if (!!params.networks) {
+      for (const e of params.networks) {
+        this.networks.push(new Network(e));
+      }
+    }
   }
   ensure(): string[] {
     const commands: string[] = [];
