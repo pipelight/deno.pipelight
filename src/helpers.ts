@@ -32,7 +32,7 @@ export const ssh = (hosts: string[], cmds: string[]): string[] => {
 export const pipeline = (
   name: string,
   fn: () => Step[],
-  options?: Omit<Step, "steps" | "name">
+  options?: Omit<Pipeline, "steps" | "name">
 ): Pipeline => {
   const steps = fn();
   const p: Pipeline = {
