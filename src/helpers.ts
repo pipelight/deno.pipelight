@@ -29,11 +29,16 @@ export const ssh = (hosts: string[], cmds: string[]): string[] => {
 };
 
 // Composition api
-export const pipeline = (name: string, fn: () => Step[]): Pipeline => {
+export const pipeline = (
+  name: string,
+  fn: () => Step[],
+  options?: Omit<Step, "steps" | "name">
+): Pipeline => {
   const steps = fn();
   const p: Pipeline = {
     name,
     steps,
+    ...options,
   };
   return p;
 };
