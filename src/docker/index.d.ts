@@ -1,3 +1,10 @@
+declare global {
+    interface Array<T> {
+        remove(): string[];
+        create(): string[];
+        send(remote: string[]): string[];
+    }
+}
 interface Port {
     out: number;
     in: number;
@@ -13,7 +20,7 @@ export declare class Network implements NetworkParams {
     name: string;
     subnet?: string;
     driver?: string;
-    constructor(name: string);
+    constructor(params: NetworkParams);
     create(): string[];
 }
 export interface VolumeParams {
@@ -23,7 +30,7 @@ export interface VolumeParams {
 export declare class Volume implements VolumeParams {
     id?: string;
     name: string;
-    constructor(name: string);
+    constructor(params: VolumeParams);
     create(): string[];
 }
 export interface ImageParams {
@@ -35,9 +42,10 @@ export declare class Image implements ImageParams {
     id?: string;
     file?: string;
     name: string;
-    constructor(name: string);
-    build(): string[];
-    send(host: string): string[];
+    constructor(params: ImageParams);
+    create(): string[];
+    remove(): string[];
+    send(hosts: string[]): string[];
 }
 export interface ContainerParams {
     id?: string;
@@ -45,7 +53,7 @@ export interface ContainerParams {
     network?: string;
     name: string;
     ports?: Port[];
-    image: ImageParams;
+    image: Pick<ImageParams, "name">;
 }
 export declare class Container implements ContainerParams {
     id?: string;
@@ -55,23 +63,22 @@ export declare class Container implements ContainerParams {
     ports?: Port[];
     image: ImageParams;
     constructor(params: ContainerParams);
-    remove(): string[];
     create(): string[];
+    remove(): string[];
 }
 export interface DockerParams {
     id?: string;
     networks?: NetworkParams[];
-    containers: ContainerParams[];
+    containers?: ContainerParams[];
     volumes?: VolumeParams[];
+    images?: ImageParams[];
 }
 export declare class Docker {
     id?: string;
     networks: Network[];
     containers: Container[];
+    images: Image[];
     volumes: Volume[];
     constructor(params: DockerParams);
-    remove(): string[];
-    ensure(): string[];
-    create(): string[];
 }
 export {};

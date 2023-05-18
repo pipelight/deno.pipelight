@@ -2,6 +2,8 @@ import { ssh } from "../helpers.ts";
 declare global {
   interface Array<T> {
     remove(): string[];
+    create(): string[];
+    send(remote: string[]): string[];
   }
 }
 Array.prototype.remove = function (): string[] {
@@ -10,6 +12,26 @@ Array.prototype.remove = function (): string[] {
   if (this.length != 0) {
     for (const e of this) {
       commands.push(...e.remove());
+    }
+  }
+  return commands;
+};
+Array.prototype.create = function (): string[] {
+  // Containers methods
+  const commands: string[] = [];
+  if (this.length != 0) {
+    for (const e of this) {
+      commands.push(...e.create());
+    }
+  }
+  return commands;
+};
+Array.prototype.send = function (hosts: string[]): string[] {
+  // Containers methods
+  const commands: string[] = [];
+  if (this.length != 0) {
+    for (const e of this) {
+      commands.push(...e.send(hosts));
     }
   }
   return commands;
@@ -79,7 +101,7 @@ export class Image implements ImageParams {
   constructor(params: ImageParams) {
     this.name = params.name;
   }
-  build(): string[] {
+  create(): string[] {
     const cmds: string[] = [];
     let str = `docker build \n`;
     if (this.file) {
@@ -89,11 +111,19 @@ export class Image implements ImageParams {
     cmds.push(str);
     return cmds;
   }
-  send(host: string): string[] {
+  remove(): string[] {
     const cmds: string[] = [];
-    let str = `docker save ${this.name}`;
-    str += " | " + ssh([host], ["docker load"]);
+    let str = `docker image rm ${this.name}`;
     cmds.push(str);
+    return cmds;
+  }
+  send(hosts: string[]): string[] {
+    const cmds: string[] = [];
+    for (let host of hosts) {
+      let str = `docker save ${this.name}`;
+      str += " | " + ssh([host], ["docker load"]);
+      cmds.push(str);
+    }
     return cmds;
   }
 }
@@ -104,7 +134,7 @@ export interface ContainerParams {
   network?: string;
   name: string;
   ports?: Port[];
-  image: ImageParams;
+  image: Pick<ImageParams, "name">;
 }
 export class Container implements ContainerParams {
   id?: string;
@@ -116,13 +146,6 @@ export class Container implements ContainerParams {
   constructor(params: ContainerParams) {
     this.name = params.name;
     this.image = params.image;
-  }
-  // Delete container
-  remove(): string[] {
-    const cmds: string[] = [];
-    let str = `docker stop ${this.name}` + " && " + `docker rm ${this.name}`;
-    cmds.push(str);
-    return cmds;
   }
   // Create container and Run it
   create(): string[] {
@@ -137,6 +160,13 @@ export class Container implements ContainerParams {
     cmds.push(str);
     return cmds;
   }
+  // Delete container
+  remove(): string[] {
+    const cmds: string[] = [];
+    let str = `docker stop ${this.name}` + " && " + `docker rm ${this.name}`;
+    cmds.push(str);
+    return cmds;
+  }
 }
 
 export interface DockerParams {
@@ -144,13 +174,20 @@ export interface DockerParams {
   networks?: NetworkParams[];
   containers?: ContainerParams[];
   volumes?: VolumeParams[];
+  images?: ImageParams[];
 }
 export class Docker {
   id?: string;
   networks: Network[] = [];
-  containers: Array<Container> = [];
+  containers: Container[] = [];
+  images: Image[] = [];
   volumes: Volume[] = [];
   constructor(params: DockerParams) {
+    if (!!params.images) {
+      for (const e of params.images) {
+        this.images.push(new Image(e));
+      }
+    }
     if (!!params.containers) {
       for (const e of params.containers) {
         this.containers.push(new Container(e));
@@ -166,28 +203,5 @@ export class Docker {
         this.networks.push(new Network(e));
       }
     }
-  }
-  ensure(): string[] {
-    const commands: string[] = [];
-    if (this.volumes.length != 0) {
-      for (const e of this.volumes) {
-        commands.push(...e.create());
-      }
-    }
-    if (this.networks.length != 0) {
-      for (let e of this.networks) {
-        commands.push(...e.create());
-      }
-    }
-    return commands;
-  }
-  create(): string[] {
-    const commands: string[] = [];
-    if (this.containers.length != 0) {
-      for (const e of this.containers) {
-        commands.push(...e.create());
-      }
-    }
-    return commands;
   }
 }
