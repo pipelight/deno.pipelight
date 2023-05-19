@@ -59,10 +59,10 @@ export class Network implements NetworkParams {
   }
   create(): string[] {
     const cmds: string[] = [];
-    let str = `docker network create \n`;
+    let str = `docker network create \ `;
     str += `--subnet=${this.subnet}`;
     if (this.driver) {
-      str += `--driver ${this.driver} \n `;
+      str += `--driver ${this.driver} \  `;
     }
     str += `${this.name}`;
     cmds.push(str);
@@ -83,7 +83,7 @@ export class Volume implements VolumeParams {
   create(): string[] {
     // run new container
     const cmds: string[] = [];
-    let str = `docker volume create \n`;
+    let str = `docker volume create \ `;
     str += `--name ${this.name}`;
     cmds.push(str);
     return cmds;
@@ -104,11 +104,13 @@ export class Image implements ImageParams {
   }
   create(): string[] {
     const cmds: string[] = [];
-    let str = `docker build \n`;
-    if (this.file) {
-      str += `--file ${this.file} \n`;
-    }
+    let str = `docker build \ `;
     str += `--tag ${this.name}`;
+    if (this.file) {
+      str += `--file ${this.file} \ `;
+    } else {
+      str += ` . \ `;
+    }
     cmds.push(str);
     return cmds;
   }
@@ -151,12 +153,12 @@ export class Container implements ContainerParams {
   // Create container and Run it
   create(): string[] {
     const cmds: string[] = [];
-    let str = `docker run \n `;
-    str += `--detach \n `;
-    str += `--name ${this.name} \n `;
+    let str = `docker run \ `;
+    str += `--detach \ `;
+    str += `--name ${this.name} \ `;
     if (this.ports) {
       for (const port of this.ports)
-        str += `--publish ${this.network}:${port.out}:${port.in}\n`;
+        str += `--publish ${this.network}:${port.out}:${port.in} \ `;
     }
     cmds.push(str);
     return cmds;
