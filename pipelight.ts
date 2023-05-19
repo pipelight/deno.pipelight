@@ -1,6 +1,10 @@
 import type { Config, Pipeline } from "https://deno.land/x/pipelight/mod.ts";
-import { Docker, Container, Network } from "./mod.ts";
-import { pipeline, step, ssh } from "./mod.ts";
+import {
+  Docker,
+  Container,
+  Network,
+} from "https://deno.land/x/pipelight/mod.ts";
+import { pipeline, step, ssh } from "https://deno.land/x/pipelight/mod.ts";
 
 // Global vars
 const version = "production";

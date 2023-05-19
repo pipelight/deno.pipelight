@@ -4,6 +4,7 @@
     "https://deno.land/x/pipelight@v0.1.7/mod.ts": "c0ba64bdbf9f7a9a10445b83f8a6149e8382ecd644998ea83f72435a993a821a",
     "https://deno.land/x/pipelight@v0.1.7/src/docker/index.ts": "07a103dd9694ae534c1de2aab3da5c29dff6fe399e307afbb1bad1970b950992",
     "https://deno.land/x/pipelight@v0.1.7/src/helpers.ts": "dc84c6f85b3d5844b088902c3647f7143885fd02606c629f8b44315b6f0d549b",
-    "https://deno.land/x/pipelight@v0.1.7/src/types/index.ts": "6f7d3150bcd56f505b1fc5d7008b195bcc8db9517b9538a1338efbaafe1106a3"
+    "https://deno.land/x/pipelight@v0.1.7/src/types/index.ts": "6f7d3150bcd56f505b1fc5d7008b195bcc8db9517b9538a1338efbaafe1106a3",
+    "https://deno.land/x/pipelight@v0.1.9/mod.ts": "4c7f6c02b5133262d45f1c7af023efe904501a80e882c6dbb110ca63faaacd8c"
   }
 }

@@ -1,4 +1,5 @@
-import { ssh } from "@helpers";
+// import { ssh } from "@helpers";
+import { ssh } from "../index.ts";
 
 declare global {
   export interface Array<T> {
