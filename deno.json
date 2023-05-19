@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "@helpers": "./src/helpers/index.ts",
+    "@docker": "./src/helpers/docker/index.ts",
+    "@types": "./src/types/index.ts"
+  }
+}

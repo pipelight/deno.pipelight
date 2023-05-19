@@ -1,4 +1,4 @@
-import type { Pipeline, Step } from "./types/index.ts";
+import type { Pipeline, Step } from "@types";
 // Execute a bash string through deno
 export const exec = async (cmd: string) => {
   const process = new Deno.Command("sh", {

@@ -1,6 +1,7 @@
-import { ssh } from "../helpers.ts";
+import { ssh } from "@helpers";
+
 declare global {
-  interface Array<T> {
+  export interface Array<T> {
     remove(): string[];
     create(): string[];
     send(remote: string[]): string[];
@@ -37,7 +38,7 @@ Array.prototype.send = function (hosts: string[]): string[] {
   return commands;
 };
 
-interface Port {
+export interface Port {
   out: number;
   in: number;
 }

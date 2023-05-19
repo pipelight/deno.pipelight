@@ -4,7 +4,9 @@ export type {
   ImageParams,
   VolumeParams,
   NetworkParams,
-} from "./src/docker/index.ts";
+} from "@docker";
+export { Docker, Container, Image, Volume, Network } from "@docker";
+
 export type {
   Config,
   Pipeline,
@@ -13,14 +15,7 @@ export type {
   Parallel,
   Action,
   Trigger,
-} from "./src/types/index.ts";
+} from "@types";
 
-export { pipeline, step } from "./src/helpers.ts";
-export { exec, ssh } from "./src/helpers.ts";
-export {
-  Docker,
-  Container,
-  Image,
-  Volume,
-  Network,
-} from "./src/docker/index.ts";
+export { pipeline, step } from "@helpers";
+export { exec, ssh } from "@helpers";
