@@ -161,6 +161,7 @@ export class Container implements ContainerParams {
       for (const port of this.ports)
         str += `--publish ${this.network}:${port.out}:${port.in} \ `;
     }
+    str += this.image.name;
     cmds.push(str);
     return cmds;
   }
