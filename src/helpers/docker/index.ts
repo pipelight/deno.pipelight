@@ -39,10 +39,10 @@ Array.prototype.send = function (hosts: string[]): string[] {
   return commands;
 };
 
-export interface Port {
+export type Port = {
   out: number;
   in: number;
-}
+};
 
 export interface NetworkParams {
   id?: string;
@@ -123,7 +123,7 @@ export class Image implements ImageParams {
   }
   send(hosts: string[]): string[] {
     const cmds: string[] = [];
-    for (let host of hosts) {
+    for (const host of hosts) {
       let str = `docker save ${this.name}`;
       str += " | " + ssh([host], ["docker load"]);
       cmds.push(str);
@@ -135,7 +135,7 @@ export class Image implements ImageParams {
 export interface ContainerParams {
   id?: string;
   ip?: string;
-  network?: string;
+  network?: Pick<NetworkParams, "name">;
   name: string;
   ports?: Port[];
   image: Pick<ImageParams, "name">;
@@ -143,13 +143,15 @@ export interface ContainerParams {
 export class Container implements ContainerParams {
   id?: string;
   ip?: string;
-  network?: NetworkParams;
+  network?: Pick<NetworkParams, "name">;
   name: string;
   ports?: Port[];
-  image: ImageParams;
+  image: Pick<ImageParams, "name">;
   constructor(params: ContainerParams) {
     this.name = params.name;
     this.image = params.image;
+    this.network = params.network;
+    this.ports = params.ports;
   }
   // Create container and Run it
   create(): string[] {
@@ -157,12 +159,13 @@ export class Container implements ContainerParams {
     const cmds: string[] = [];
     let str = `docker run \ `;
     str += `--detach \ `;
-    str += `--name ${this.name} \ `;
-    if (this.ports) {
+    console.log(this);
+    if (true) {
       for (const port of this.ports) {
         str += `--publish ${hostNetwork}:${port.out}:${port.in} \ `;
       }
     }
+    str += `--name ${this.name} \ `;
     str += this.image.name;
     cmds.push(str);
     return cmds;
