@@ -143,7 +143,7 @@ export interface ContainerParams {
 export class Container implements ContainerParams {
   id?: string;
   ip?: string;
-  network?: string = "127.0.0.1";
+  network?: NetworkParams;
   name: string;
   ports?: Port[];
   image: ImageParams;
@@ -153,13 +153,15 @@ export class Container implements ContainerParams {
   }
   // Create container and Run it
   create(): string[] {
+    let hostNetwork: string = "127.0.0.1";
     const cmds: string[] = [];
     let str = `docker run \ `;
     str += `--detach \ `;
     str += `--name ${this.name} \ `;
     if (this.ports) {
-      for (const port of this.ports)
-        str += `--publish ${this.network}:${port.out}:${port.in} \ `;
+      for (const port of this.ports) {
+        str += `--publish ${hostNetwork}:${port.out}:${port.in} \ `;
+      }
     }
     str += this.image.name;
     cmds.push(str);
