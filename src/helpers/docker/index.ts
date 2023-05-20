@@ -159,8 +159,7 @@ export class Container implements ContainerParams {
     const cmds: string[] = [];
     let str = `docker run \ `;
     str += `--detach \ `;
-    console.log(this);
-    if (true) {
+    if (!!this.ports) {
       for (const port of this.ports) {
         str += `--publish ${hostNetwork}:${port.out}:${port.in} \ `;
       }
