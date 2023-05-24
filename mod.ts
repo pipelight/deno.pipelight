@@ -27,6 +27,6 @@ export type {
 } from "./src/types/index.ts";
 
 // export { pipeline, step } from "@helpers";
-export { pipeline, step } from "./src/helpers/index.ts";
+export { pipeline, step } from "./src/helpers/common/index.ts";
 // export { exec, ssh } from "@helpers";
-export { exec, ssh } from "./src/helpers/index.ts";
+export { exec, ssh } from "./src/helpers/common/index.ts";

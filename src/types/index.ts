@@ -1,7 +1,7 @@
-type Config = {
+export type Config = {
   pipelines?: Pipeline[];
 };
-type Pipeline = {
+export interface Pipeline {
   name: string;
   steps: StepOrParallel[];
   triggers?: Trigger[];
@@ -9,32 +9,52 @@ type Pipeline = {
   on_failure?: StepOrParallel[];
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
-};
+}
+export class Pipeline implements Pipeline {
+  name: string;
+  steps: StepOrParallel[];
+  triggers?: Trigger[];
+  on_started?: StepOrParallel[];
+  on_failure?: StepOrParallel[];
+  on_success?: StepOrParallel[];
+  on_abortion?: StepOrParallel[];
+  constructor(params: Pipeline) {
+    this.name = params.name;
+    this.triggers = params.triggers;
+    this.steps = params.steps;
+    this.on_started = params.on_started;
+    this.on_failure = params.on_failure;
+    this.on_abortion = params.on_abortion;
+    this.on_success = params.on_success;
+    this.on_abortion = params.on_abortion;
+  }
+  add_trigger?(trigger: Trigger) {
+    !!this.triggers ? this.triggers.push(trigger) : (this.triggers = [trigger]);
+  }
+}
 
-type StepOrParallel = Step | Parallel;
-type Parallel = {
-  mode?: Mode;
+export type StepOrParallel = Step | Parallel;
+export type Parallel = {
   parallel: Step[];
   on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
 };
-type Step = {
-  mode?: Mode;
+export type Step = {
   name: string;
   commands: string[];
+  mode?: Mode;
   on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
 };
-type Trigger = {
+export type Trigger = {
   branches?: string[];
   actions?: Action[];
 };
-type Mode = "stop" | "jump_next" | "continue";
-type Action =
+export type Action =
   | "applypatch-msg"
   | "pre-applypatch"
   | "post-apply-patch"
@@ -54,12 +74,4 @@ type Action =
   | "pre-push"
   | "manual";
 
-export type {
-  Config,
-  Pipeline,
-  StepOrParallel,
-  Step,
-  Parallel,
-  Action,
-  Trigger,
-};
+export type Mode = "stop" | "jump_next" | "continue";

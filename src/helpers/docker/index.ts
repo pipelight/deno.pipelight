@@ -1,5 +1,5 @@
 // import { ssh } from "@helpers";
-import { ssh } from "../index.ts";
+import { ssh } from "../common/index.ts";
 
 declare global {
   export interface Array<T> {
@@ -61,14 +61,31 @@ export class Network implements NetworkParams {
   create(): string[] {
     const cmds: string[] = [];
     let str = `docker network create \ `;
-    str += `--subnet=${this.subnet}`;
-    if (this.driver) {
+    if (!!this.subnet) {
+      str += `--subnet=${this.subnet}`;
+    }
+    if (!!this.driver) {
       str += `--driver ${this.driver} \  `;
     }
     str += `${this.name}`;
     cmds.push(str);
     return cmds;
   }
+  remove(): string[] {
+    const cmds: string[] = [];
+    let str = `docker network rm ${this.name}\ `;
+    cmds.push(str);
+    return cmds;
+  }
+}
+
+export interface MountVolumeParams {
+  id?: string;
+  name: string;
+  path: {
+    // Inside container path
+    inside: string;
+  };
 }
 
 export interface VolumeParams {
@@ -135,33 +152,50 @@ export class Image implements ImageParams {
 export interface ContainerParams {
   id?: string;
   ip?: string;
-  network?: Pick<NetworkParams, "name">;
   name: string;
-  ports?: Port[];
   image: Pick<ImageParams, "name">;
+  volumes?: Pick<VolumeParams, "name">[];
+  networks?: Pick<NetworkParams, "name">[];
+  ports?: Port[];
 }
 export class Container implements ContainerParams {
   id?: string;
-  ip?: string;
-  network?: Pick<NetworkParams, "name">;
+  ips?: string[];
+  networks?: Pick<NetworkParams, "name">[];
+  volumes?: MountVolumeParams[];
   name: string;
   ports?: Port[];
   image: Pick<ImageParams, "name">;
   constructor(params: ContainerParams) {
     this.name = params.name;
     this.image = params.image;
-    this.network = params.network;
+    this.networks = params.networks;
     this.ports = params.ports;
   }
   // Create container and Run it
   create(): string[] {
-    let hostNetwork: string = "127.0.0.1";
+    let host = {
+      network: {
+        public: "0.0.0.0",
+        private: "127.0.0.1",
+      },
+    };
     const cmds: string[] = [];
     let str = `docker run \ `;
     str += `--detach \ `;
     if (!!this.ports) {
       for (const port of this.ports) {
-        str += `--publish ${hostNetwork}:${port.out}:${port.in} \ `;
+        str += `--publish ${host.network}:${port.out}:${port.in} \ `;
+      }
+    }
+    if (!!this.networks) {
+      for (const network of this.networks) {
+        str += `--network ${network.name} \ `;
+      }
+    }
+    if (!!this.volumes) {
+      for (const volume of this.volumes) {
+        str += `--volume ${volume.name}:${volume.path.inside} \ `;
       }
     }
     str += `--name ${this.name} \ `;
