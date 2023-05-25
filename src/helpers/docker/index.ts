@@ -169,6 +169,7 @@ export class Container implements ContainerParams {
   constructor(params: ContainerParams) {
     this.name = params.name;
     this.image = params.image;
+    this.volumes = params.volumes;
     this.networks = params.networks;
     this.ports = params.ports;
   }
