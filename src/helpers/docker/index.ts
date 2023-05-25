@@ -185,7 +185,7 @@ export class Container implements ContainerParams {
     str += `--detach \ `;
     if (!!this.ports) {
       for (const port of this.ports) {
-        str += `--publish ${host.network}:${port.out}:${port.in} \ `;
+        str += `--publish ${host.network.private}:${port.out}:${port.in} \ `;
       }
     }
     if (!!this.networks) {
