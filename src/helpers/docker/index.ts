@@ -123,11 +123,11 @@ export class Image implements ImageParams {
   create(): string[] {
     const cmds: string[] = [];
     let str = `docker build \ `;
-    str += `--tag ${this.name}`;
+    str += `--tag ${this.name} \ `;
     if (this.file) {
-      str += `--file ${this.file} \ `;
+      str += `--file ${this.file}`;
     } else {
-      str += ` . \ `;
+      str += ` .`;
     }
     cmds.push(str);
     return cmds;
@@ -154,7 +154,7 @@ export interface ContainerParams {
   ip?: string;
   name: string;
   image: Pick<ImageParams, "name">;
-  volumes?: Pick<VolumeParams, "name">[];
+  volumes?: MountVolumeParams[];
   networks?: Pick<NetworkParams, "name">[];
   ports?: Port[];
 }
