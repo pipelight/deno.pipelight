@@ -14,20 +14,23 @@ export interface ContainerAutoParams {
   volumes?: Array<MountVolumeAutoParams | MountVolumeParams>;
   networks?: MountNetworkAutoParams[];
   ports?: Port[];
+  envs?: string[];
 }
 export interface ContainerParams {
   name: string;
   image: Pick<ImageParams, "name">;
-  volumes?: MountVolumeParams[];
   networks?: MountNetworkParams[];
+  volumes?: MountVolumeParams[];
   ports?: Port[];
+  envs?: string[];
 }
 export class Container implements ContainerParams {
+  name: string;
+  image: Pick<ImageParams, "name">;
   networks?: MountNetworkParams[];
   volumes?: MountVolumeParams[];
-  name: string;
   ports?: Port[];
-  image: Pick<ImageParams, "name">;
+  envs?: string[];
   constructor(params: ContainerParams) {
     this.name = params.name;
     this.image = params.image;
@@ -59,6 +62,11 @@ export class Container implements ContainerParams {
     if (!!this.volumes) {
       for (const volume of this.volumes) {
         str += `--volume ${volume.name}:${volume.path.inside} \ `;
+      }
+    }
+    if (!!this.envs) {
+      for (const env of this.envs) {
+        str += `--env ${env} \ `;
       }
     }
     str += `--name ${this.name} \ `;

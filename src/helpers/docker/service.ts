@@ -170,6 +170,7 @@ export class Docker {
         name: `${version}.${e.suffix}.${dns}`,
         image: { name: `${dns}/${e.suffix}:${version}` },
         ports: e.ports,
+        envs: e.envs,
       };
       if (!!e.volumes) {
         container.volumes = [];
@@ -209,14 +210,19 @@ export class Docker {
             };
             docker.networks?.push(net);
             // Link network definition to container
-            container.networks.push(net);
+            container.networks.push({
+              name,
+              ip: network.ip,
+            });
           } else {
             const net: NetworkParams = {
               name: name,
             };
             docker.networks?.push(net);
             // Link network definition to container
-            container.networks.push(net);
+            container.networks.push({
+              name,
+            });
           }
         }
       }
