@@ -20,8 +20,8 @@ export class Image implements ImageParams {
     let str = `docker build \ `;
     str += `--tag ${this.name} \ `;
     if (!!this.file) {
-      str += `--file ${this.file}`;
-    } else {
+      str += `--file ${this.file} \ `;
+    }
       str += ` .`;
     }
     cmds.push(str);
