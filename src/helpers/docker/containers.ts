@@ -57,6 +57,9 @@ export class Container implements ContainerParams {
     if (!!this.networks) {
       for (const network of this.networks) {
         str += `--network ${network.name} \ `;
+        if (!!network.ip) {
+          str += `--ip ${network.ip} \ `;
+        }
       }
     }
     if (!!this.volumes) {
