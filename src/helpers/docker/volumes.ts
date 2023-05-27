@@ -17,7 +17,6 @@ export interface VolumeParams {
   name: string;
 }
 export class Volume implements VolumeParams {
-  id?: string;
   name: string;
   constructor(params: VolumeParams) {
     this.name = params.name;

@@ -157,8 +157,12 @@ export class Docker {
   }
   from_service_params(params: ServiceParams) {
     const { version, host, dns } = params.globals;
-    let docker: DockerParams = {};
-
+    const docker: DockerParams = {
+      images: [],
+      volumes: [],
+      networks: [],
+      containers: [],
+    };
     for (const e of params.containers) {
       // Image definition
       docker.images?.push({

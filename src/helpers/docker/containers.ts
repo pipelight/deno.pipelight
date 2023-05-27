@@ -12,7 +12,7 @@ export interface ContainerAutoParams {
   suffix: string;
   image: ImageAutoParams;
   volumes?: Array<MountVolumeAutoParams | MountVolumeParams>;
-  networks?: MountNetworkAutoParams[];
+  networks?: Array<MountNetworkAutoParams | MountNetworkParams>;
   ports?: Port[];
   envs?: string[];
 }
