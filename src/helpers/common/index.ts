@@ -14,6 +14,8 @@ export const exec = async (cmd: string) => {
   }
 };
 
+// When multiple ssh session are requested by pipelight, it goes to fast for the tcp connection to keep up.
+// It needs to be killed before requesting for another  -> "keepAlive = No"
 export const ssh_wrapper = (host: string, cmd: string): string => {
   const suffix = "ssh -o TCPKeepAlive=no -C";
   return `${suffix} ${host} "${cmd}"`;
