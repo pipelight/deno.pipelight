@@ -179,7 +179,7 @@ export class Docker {
       if (!!e.image) {
         docker.images.push({
           name: `${dns}/${e.suffix}:${version}`,
-          file: `.docker/Dockrefile.${e.suffix}`,
+          file: `.docker/Dockerfile.${e.suffix}`,
         });
       }
       // Container definition
