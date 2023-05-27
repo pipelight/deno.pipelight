@@ -16,24 +16,7 @@ import {
   ContainerAutoParams,
 } from "./index.ts";
 
-import { get_subnet, uniqBy } from "../../utils/index.ts";
-
-declare global {
-  export interface Array<T> {
-    up(): string[];
-    down(): string[];
-  }
-}
-Array.prototype.up = function (): string[] {
-  // Containers methods
-  const commands: string[] = [];
-  if (this.length != 0) {
-    for (const e of this) {
-      commands.push(...e.up());
-    }
-  }
-  return commands;
-};
+import { get_subnet } from "../../utils/index.ts";
 
 declare global {
   export interface Array<T> {
@@ -68,6 +51,33 @@ Array.prototype.send = function (hosts: string[]): string[] {
   if (this.length != 0) {
     for (const e of this) {
       commands.push(...e.send(hosts));
+    }
+  }
+  return commands;
+};
+
+declare global {
+  export interface Array<T> {
+    up(): string[];
+    down(): string[];
+  }
+}
+Array.prototype.up = function (): string[] {
+  // Containers methods
+  const commands: string[] = [];
+  if (this.length != 0) {
+    for (const e of this) {
+      commands.push(...e.up());
+    }
+  }
+  return commands;
+};
+Array.prototype.down = function (): string[] {
+  // Containers methods
+  const commands: string[] = [];
+  if (this.length != 0) {
+    for (const e of this) {
+      commands.push(...e.down());
     }
   }
   return commands;
@@ -239,7 +249,7 @@ export class Docker {
   }
   dedup() {
     for (const [key, value] of Object.entries(this)) {
-      this[key] = uniqBy(value, "name");
+      this[key] = this[key].dedup();
     }
   }
 }

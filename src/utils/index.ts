@@ -11,3 +11,12 @@ export const uniqBy = (a: Array<T>, key: string): Array<T> => {
     return seen.has(k) ? false : seen.add(k);
   });
 };
+
+declare global {
+  export interface Array<T> {
+    dedup(): string[];
+  }
+}
+Array.prototype.dedup = function () {
+  return uniqBy(this, "name");
+};
