@@ -22,8 +22,7 @@ export class Image implements ImageParams {
     if (!!this.file) {
       str += `--file ${this.file} \ `;
     }
-      str += ` .`;
-    }
+    str += ` .`;
     cmds.push(str);
     return cmds;
   }
