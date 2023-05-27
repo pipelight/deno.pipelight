@@ -9,16 +9,17 @@ export interface ImageParams {
   file?: string;
 }
 export class Image implements ImageParams {
-  file?: string;
   name: string;
+  file?: string;
   constructor(params: ImageParams) {
     this.name = params.name;
+    this.file = params.file;
   }
   create(): string[] {
     const cmds: string[] = [];
     let str = `docker build \ `;
     str += `--tag ${this.name} \ `;
-    if (this.file) {
+    if (!!this.file) {
       str += `--file ${this.file}`;
     } else {
       str += ` .`;

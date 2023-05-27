@@ -165,10 +165,12 @@ export class Docker {
     };
     for (const e of params.containers) {
       // Image definition
-      docker.images?.push({
-        name: `${dns}/${e.suffix}:${version}`,
-        file: `.docker/Dockrefile.${e.suffix}`,
-      });
+      if (!!e.image) {
+        docker.images.push({
+          name: `${dns}/${e.suffix}:${version}`,
+          file: `.docker/Dockrefile.${e.suffix}`,
+        });
+      }
       // Container definition
       const container: ContainerParams = {
         name: `${version}.${e.suffix}.${dns}`,
