@@ -29,7 +29,7 @@ export class Network implements NetworkParams {
     const cmds: string[] = [];
     let str = `docker network create \ `;
     if (!!this.subnet) {
-      str += `--subnet=${this.subnet}`;
+      str += `--subnet=${this.subnet} \ `;
     }
     if (!!this.driver) {
       str += `--driver ${this.driver} \  `;
@@ -40,7 +40,7 @@ export class Network implements NetworkParams {
   }
   remove(): string[] {
     const cmds: string[] = [];
-    let str = `docker network rm ${this.name}\ `;
+    let str = `docker network rm ${this.name} \ `;
     cmds.push(str);
     return cmds;
   }

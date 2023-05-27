@@ -108,6 +108,8 @@ export class Service {
     const cmds = [
       ...docker.images.create(),
       ...docker.volumes.create(),
+      // update networks
+      ...docker.networks.remove(),
       ...docker.networks.create(),
       ...docker.containers.create(),
     ];
