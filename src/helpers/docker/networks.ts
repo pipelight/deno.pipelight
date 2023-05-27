@@ -22,6 +22,8 @@ export class Network implements NetworkParams {
   driver?: string;
   constructor(params: NetworkParams) {
     this.name = params.name;
+    this.subnet = params.subnet;
+    this.driver = params.driver;
   }
   create(): string[] {
     const cmds: string[] = [];
