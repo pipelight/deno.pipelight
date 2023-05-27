@@ -40,7 +40,7 @@ export class Network implements NetworkParams {
   }
   remove(): string[] {
     const cmds: string[] = [];
-    let str = `docker network rm ${this.name} \ `;
+    let str = `docker network rm ${this.name}`;
     cmds.push(str);
     return cmds;
   }
