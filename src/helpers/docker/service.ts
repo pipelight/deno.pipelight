@@ -88,6 +88,33 @@ export interface ServiceParams {
   globals: Globals;
   containers: ContainerAutoParams[];
 }
+export class Service {
+  docker: Docker;
+  constructor(params: ServiceParams) {
+    this.docker = new Docker(params);
+  }
+  up(): string[] {
+    const docker = this.docker;
+    const cmds = [
+      ...docker.images.create(),
+      ...docker.volumes.create(),
+      ...docker.networks.create(),
+      ...docker.containers.create(),
+    ];
+    return cmds;
+  }
+  down(): string[] {
+    const docker = this.docker;
+    const cmds = [
+      ...docker.images.remove(),
+      ...docker.volumes.remove(),
+      ...docker.networks.remove(),
+      ...docker.containers.remove(),
+    ];
+    return cmds;
+  }
+}
+
 export interface DockerParams {
   images?: ImageParams[];
   volumes?: VolumeParams[];
@@ -196,23 +223,5 @@ export class Docker {
       docker.containers?.push(container);
     }
     this.from_docker_params(docker);
-  }
-  up(): string[] {
-    const cmds = [
-      ...this.images.create(),
-      ...this.volumes.create(),
-      ...this.networks.create(),
-      ...this.containers.create(),
-    ];
-    return cmds;
-  }
-  down(): string[] {
-    const cmds = [
-      ...this.images.remove(),
-      ...this.volumes.remove(),
-      ...this.networks.remove(),
-      ...this.containers.remove(),
-    ];
-    return cmds;
   }
 }
