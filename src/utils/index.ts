@@ -4,3 +4,10 @@ export const get_subnet = (ip: string): string => {
   const subnet = base + ".0/24";
   return subnet;
 };
+export const uniqBy = (a: Array<T>, key: string): Array<T> => {
+  let seen = new Set();
+  return a.filter((item) => {
+    let k = item[key];
+    return seen.has(k) ? false : seen.add(k);
+  });
+};

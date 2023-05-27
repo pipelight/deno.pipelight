@@ -16,7 +16,7 @@ import {
   ContainerAutoParams,
 } from "./index.ts";
 
-import { get_subnet } from "../../utils/index.ts";
+import { get_subnet, uniqBy } from "../../utils/index.ts";
 
 declare global {
   export interface Array<T> {
@@ -132,6 +132,7 @@ export class Docker {
     } else {
       this.from_docker_params(params);
     }
+    this.dedup();
   }
   from_docker_params(params: DockerParams) {
     if (!!params.images) {
@@ -206,7 +207,7 @@ export class Docker {
           if ("name" in network) {
             name = `${network.name}`;
           } else {
-            name = `${version}_${e.suffix}_${dns}__${network.suffix}`;
+            name = `${version}_${dns}__${network.suffix}`;
           }
           // Set subnet based on ip
           if (!!network.ip) {
@@ -235,5 +236,10 @@ export class Docker {
       docker.containers?.push(container);
     }
     this.from_docker_params(docker);
+  }
+  dedup() {
+    for (const [key, value] of Object.entries(this)) {
+      this[key] = uniqBy(value, "name");
+    }
   }
 }
