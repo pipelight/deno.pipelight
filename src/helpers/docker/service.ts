@@ -84,14 +84,10 @@ Array.prototype.down = function (): string[] {
 };
 
 export interface Globals {
-  // version: production
   version: string;
-  // host: linode
-  host: string;
-  // service: api
-  // service: string;
-  // dns: pipelight.dev
+  // version: production
   dns: string;
+  // dns: pipelight.dev
 }
 
 export interface ServiceParams {
@@ -169,7 +165,7 @@ export class Docker {
     }
   }
   from_service_params(params: ServiceParams) {
-    const { version, host, dns } = params.globals;
+    const { version, dns } = params.globals;
     const docker: DockerParams = {
       images: [],
       volumes: [],

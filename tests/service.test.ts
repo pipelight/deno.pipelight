@@ -2,7 +2,6 @@ import { Service, ServiceParams } from "../mod.ts";
 const params: ServiceParams = {
   globals: {
     version: "production",
-    host: "linode",
     dns: "itsdizygote.com",
   },
   containers: [
