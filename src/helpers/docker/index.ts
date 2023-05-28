@@ -10,12 +10,12 @@ export type { ImageParams, ImageAutoParams } from "./images.ts";
 export { Image } from "./images.ts";
 // Network Helpers
 export type {
-  Port,
+  PortParams,
   NetworkParams,
   MountNetworkParams,
   MountNetworkAutoParams,
 } from "./networks.ts";
-export { Network } from "./networks.ts";
+export { Port, Network } from "./networks.ts";
 // Container Helpers
 export type { ContainerParams, ContainerAutoParams } from "./containers.ts";
 export { Container } from "./containers.ts";

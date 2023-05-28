@@ -1,7 +1,24 @@
-export type Port = {
-  out: number;
+import { uniqBy } from "../../utils/index.ts";
+
+export interface PortParams {
   in: number;
-};
+  out: number;
+  private?: boolean;
+}
+export class Port {
+  in: number;
+  out: number;
+  ip?: string;
+  constructor(params: PortParams) {
+    this.in = params.in;
+    this.out = params.out;
+    if (params.private == false) {
+      this.ip = "0.0.0.0";
+    } else {
+      this.ip = "127.0.0.1";
+    }
+  }
+}
 export interface MountNetworkParams {
   name: string;
   ip?: string;

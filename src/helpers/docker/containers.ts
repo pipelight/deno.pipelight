@@ -5,6 +5,7 @@ import {
   ImageParams,
   MountNetworkAutoParams,
   MountNetworkParams,
+  PortParams,
   Port,
 } from "./index.ts";
 
@@ -13,7 +14,7 @@ export interface ContainerAutoParams {
   image: ImageAutoParams;
   volumes?: Array<MountVolumeAutoParams | MountVolumeParams>;
   networks?: Array<MountNetworkAutoParams | MountNetworkParams>;
-  ports?: Port[];
+  ports?: PortParams[];
   envs?: string[];
 }
 export interface ContainerParams {
@@ -21,7 +22,7 @@ export interface ContainerParams {
   image: Pick<ImageParams, "name">;
   networks?: MountNetworkParams[];
   volumes?: MountVolumeParams[];
-  ports?: Port[];
+  ports?: PortParams[];
   envs?: string[];
 }
 export class Container implements ContainerParams {
@@ -29,7 +30,7 @@ export class Container implements ContainerParams {
   image: Pick<ImageParams, "name">;
   networks?: MountNetworkParams[];
   volumes?: MountVolumeParams[];
-  ports?: Port[];
+  ports?: PortParams[];
   envs?: string[];
   constructor(params: ContainerParams) {
     this.name = params.name;
@@ -50,8 +51,9 @@ export class Container implements ContainerParams {
     let str = `docker run \ `;
     str += `--detach \ `;
     if (!!this.ports) {
-      for (const port of this.ports) {
-        str += `--publish ${host.network.private}:${port.out}:${port.in} \ `;
+      for (const port_params of this.ports) {
+        const port = new Port(port_params);
+        str += `--publish ${port.ip}:${port.out}:${port.in} \ `;
       }
     }
     if (!!this.networks) {

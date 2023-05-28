@@ -4,19 +4,19 @@ export const get_subnet = (ip: string): string => {
   const subnet = base + ".0/24";
   return subnet;
 };
-export const uniqBy = (a: Array<T>, key: string): Array<T> => {
+export const uniqBy = <T>(a: Array<T>, key: string): Array<T> => {
   let seen = new Set();
   return a.filter((item) => {
-    let k = item[key];
+    let k: any = item[key as keyof T];
     return seen.has(k) ? false : seen.add(k);
   });
 };
 
 declare global {
   export interface Array<T> {
-    dedup(): string[];
+    dedup<T>(key?: string): Array<T>;
   }
 }
-Array.prototype.dedup = function () {
-  return uniqBy(this, "name");
+Array.prototype.dedup = function (key?: string) {
+  return uniqBy(this, !!key ? key : "name");
 };

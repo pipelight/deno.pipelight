@@ -175,7 +175,7 @@ export class Docker {
     for (const e of params.containers) {
       // Image definition
       if (!!e.image) {
-        docker.images.push({
+        docker.images?.push({
           name: `${dns}/${e.suffix}:${version}`,
           file: `.docker/Dockerfile.${e.suffix}`,
         });
@@ -247,7 +247,8 @@ export class Docker {
   }
   dedup() {
     for (const [key, value] of Object.entries(this)) {
-      this[key] = this[key].dedup();
+      const uniq = value.dedup();
+      this[key as keyof Docker] = uniq;
     }
   }
 }
