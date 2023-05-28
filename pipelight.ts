@@ -60,6 +60,10 @@ const compositionPipe = pipeline(
         branches: ["dev"],
         actions: ["manual"],
       },
+      {
+        tags: ["*"],
+        actions: ["pre-push"],
+      },
     ],
   }
 );

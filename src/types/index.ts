@@ -50,8 +50,13 @@ export type Step = {
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
 };
-export type Trigger = {
+export type Trigger = TriggerBranch | TriggerTag;
+export type TriggerBranch = {
   branches?: string[];
+  actions?: Action[];
+};
+export type TriggerTag = {
+  tags?: string[];
   actions?: Action[];
 };
 export type Action =
