@@ -97,8 +97,10 @@ export interface ServiceParams {
 }
 export class Service {
   docker: Docker;
+  globals: Globals;
   constructor(params: ServiceParams) {
     this.docker = new Docker(params);
+    this.globals = params.globals;
   }
   update(): string[] {
     const docker = this.docker;
