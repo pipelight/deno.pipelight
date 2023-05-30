@@ -16,7 +16,17 @@ declare global {
   export interface Array<T> {
     dedup<T>(key?: string): Array<T>;
   }
+  export interface Map<K, V> {
+    dedup<K, V>(key?: string): Map<K, V>;
+  }
 }
-Array.prototype.dedup = function (key?: string) {
+Array.prototype.dedup = function <T>(key?: string): Array<T> {
   return uniqBy(this, !!key ? key : "name");
+};
+
+Map.prototype.dedup = function <K, V>(key?: string): Map<K, V> {
+  const array = Array.from(this);
+  uniqBy(array, !!key ? key : "name");
+  const map = new Map(array.map((e) => (e[key as any], e)));
+  return map;
 };

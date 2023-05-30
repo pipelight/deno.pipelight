@@ -55,6 +55,34 @@ Array.prototype.send = function (hosts: string[]): string[] {
   }
   return commands;
 };
+declare global {
+  export interface Map<K, V> {
+    remove(): string[];
+    create(): string[];
+  }
+}
+Map.prototype.remove = function (): string[] {
+  // Containers methods
+  const commands: string[] = [];
+  const array = Array.from(this, ([key, value]) => value);
+  if (array.length != 0) {
+    for (const e of array) {
+      commands.push(...e.remove());
+    }
+  }
+  return commands;
+};
+Map.prototype.create = function (): string[] {
+  // Containers methods
+  const commands: string[] = [];
+  const array = Array.from(this, ([key, value]) => value);
+  if (array.length != 0) {
+    for (const e of array) {
+      commands.push(...e.create());
+    }
+  }
+  return commands;
+};
 
 export interface Globals {
   version: string;
@@ -101,7 +129,7 @@ export interface DockerParams {
 }
 export class Docker {
   networks: Network[] = [];
-  containers: Container[] = [];
+  containers: Map<String, Container> = new Map();
   images: Image[] = [];
   volumes: Volume[] = [];
   constructor(params: DockerParams | ServiceParams) {
@@ -120,7 +148,7 @@ export class Docker {
     }
     if (!!params.containers) {
       for (const e of params.containers) {
-        this.containers.push(new Container(e));
+        this.containers.set(e.name, new Container(e));
       }
     }
     if (!!params.volumes) {
