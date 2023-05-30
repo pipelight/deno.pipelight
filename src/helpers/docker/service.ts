@@ -56,33 +56,6 @@ Array.prototype.send = function (hosts: string[]): string[] {
   return commands;
 };
 
-declare global {
-  export interface Array<T> {
-    up(): string[];
-    down(): string[];
-  }
-}
-Array.prototype.up = function (): string[] {
-  // Containers methods
-  const commands: string[] = [];
-  if (this.length != 0) {
-    for (const e of this) {
-      commands.push(...e.up());
-    }
-  }
-  return commands;
-};
-Array.prototype.down = function (): string[] {
-  // Containers methods
-  const commands: string[] = [];
-  if (this.length != 0) {
-    for (const e of this) {
-      commands.push(...e.down());
-    }
-  }
-  return commands;
-};
-
 export interface Globals {
   version: string;
   // version: production
@@ -99,25 +72,22 @@ export class Service {
   constructor(params: ServiceParams) {
     this.docker = new Docker(params);
   }
-  up(): string[] {
+  update(): string[] {
+    const docker = this.docker;
+    const cmds = [...docker.images.create()];
+    return cmds;
+  }
+  upgrade(): string[] {
     const docker = this.docker;
     const cmds = [
-      ...docker.images.create(),
+      // update volumes
       ...docker.volumes.create(),
       // update networks
       ...docker.networks.remove(),
       ...docker.networks.create(),
-      ...docker.containers.create(),
-    ];
-    return cmds;
-  }
-  down(): string[] {
-    const docker = this.docker;
-    const cmds = [
-      ...docker.images.remove(),
-      ...docker.volumes.remove(),
-      ...docker.networks.remove(),
+      // update containers
       ...docker.containers.remove(),
+      ...docker.containers.create(),
     ];
     return cmds;
   }
