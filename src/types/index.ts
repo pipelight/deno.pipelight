@@ -52,11 +52,11 @@ export type Step = {
 };
 export type Trigger = TriggerBranch | TriggerTag;
 export type TriggerBranch = {
-  branches?: string[];
+  branches: string[];
   actions?: Action[];
 };
 export type TriggerTag = {
-  tags?: string[];
+  tags: string[];
   actions?: Action[];
 };
 export type Action =
