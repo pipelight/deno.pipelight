@@ -86,4 +86,13 @@ export class Container implements ContainerParams {
     cmds.push(str);
     return cmds;
   }
+  exec(inputs: string[]): string[] {
+    const cmds: string[] = [];
+    for (const input of inputs) {
+      let str = `docker container exec ${this.name} \ `;
+      str += input;
+      cmds.push(str);
+    }
+    return cmds;
+  }
 }
