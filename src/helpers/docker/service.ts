@@ -18,72 +18,6 @@ import {
 
 import { get_subnet } from "../../utils/index.ts";
 
-declare global {
-  export interface Array<T> {
-    remove(): string[];
-    create(): string[];
-    send(remote: string[]): string[];
-  }
-}
-Array.prototype.remove = function (): string[] {
-  // Containers methods
-  const commands: string[] = [];
-  if (this.length != 0) {
-    for (const e of this) {
-      commands.push(...e.remove());
-    }
-  }
-  return commands;
-};
-Array.prototype.create = function (): string[] {
-  // Containers methods
-  const commands: string[] = [];
-  if (this.length != 0) {
-    for (const e of this) {
-      commands.push(...e.create());
-    }
-  }
-  return commands;
-};
-Array.prototype.send = function (hosts: string[]): string[] {
-  // Containers methods
-  const commands: string[] = [];
-  if (this.length != 0) {
-    for (const e of this) {
-      commands.push(...e.send(hosts));
-    }
-  }
-  return commands;
-};
-declare global {
-  export interface Map<K, V> {
-    remove(): string[];
-    create(): string[];
-  }
-}
-Map.prototype.remove = function (): string[] {
-  // Containers methods
-  const commands: string[] = [];
-  const array = Array.from(this, ([key, value]) => value);
-  if (array.length != 0) {
-    for (const e of array) {
-      commands.push(...e.remove());
-    }
-  }
-  return commands;
-};
-Map.prototype.create = function (): string[] {
-  // Containers methods
-  const commands: string[] = [];
-  const array = Array.from(this, ([key, value]) => value);
-  if (array.length != 0) {
-    for (const e of array) {
-      commands.push(...e.create());
-    }
-  }
-  return commands;
-};
-
 export interface Globals {
   version: string;
   // version: production
@@ -91,37 +25,11 @@ export interface Globals {
   // dns: pipelight.dev
 }
 
-export interface ServiceParams {
+export interface DockerAutoParams {
   globals: Globals;
   containers: ContainerAutoParams[];
 }
-export class Service {
-  docker: Docker;
-  globals: Globals;
-  constructor(params: ServiceParams) {
-    this.docker = new Docker(params);
-    this.globals = params.globals;
-  }
-  update(): string[] {
-    const docker = this.docker;
-    const cmds = [...docker.images.create()];
-    return cmds;
-  }
-  upgrade(): string[] {
-    const docker = this.docker;
-    const cmds = [
-      // update volumes
-      ...docker.volumes.create(),
-      // update networks
-      ...docker.networks.remove(),
-      ...docker.networks.create(),
-      // update containers
-      ...docker.containers.remove(),
-      ...docker.containers.create(),
-    ];
-    return cmds;
-  }
-}
+export class Service {}
 
 export interface DockerParams {
   images?: ImageParams[];
@@ -131,18 +39,18 @@ export interface DockerParams {
 }
 export class Docker {
   networks: Network[] = [];
-  containers: Map<String, Container> = new Map();
+  containers: Container[] = [];
   images: Image[] = [];
   volumes: Volume[] = [];
-  constructor(params: DockerParams | ServiceParams) {
+  constructor(params: DockerParams | DockerAutoParams) {
     if ("globals" in params) {
-      this.from_service_params(params);
+      this.hydrate(this.convert(params));
+      this.containers.ctx = params.globals;
     } else {
-      this.from_docker_params(params);
+      this.hydrate(params);
     }
-    this.dedup();
   }
-  from_docker_params(params: DockerParams) {
+  hydrate(params: DockerParams) {
     if (!!params.images) {
       for (const e of params.images) {
         this.images.push(new Image(e));
@@ -150,7 +58,7 @@ export class Docker {
     }
     if (!!params.containers) {
       for (const e of params.containers) {
-        this.containers.set(e.name, new Container(e));
+        this.containers.push(new Container(e));
       }
     }
     if (!!params.volumes) {
@@ -163,8 +71,9 @@ export class Docker {
         this.networks.push(new Network(e));
       }
     }
+    this.dedup();
   }
-  from_service_params(params: ServiceParams) {
+  convert(params: DockerAutoParams) {
     const { version, dns } = params.globals;
     const docker: DockerParams = {
       images: [],
@@ -243,12 +152,29 @@ export class Docker {
       }
       docker.containers?.push(container);
     }
-    this.from_docker_params(docker);
+    return docker;
   }
   dedup() {
     for (const [key, value] of Object.entries(this)) {
       const uniq = value.dedup();
       this[key as keyof Docker] = uniq;
     }
+  }
+  update(): string[] {
+    const cmds = [...this.images.create()];
+    return cmds;
+  }
+  upgrade(): string[] {
+    const cmds = [
+      // update volumes
+      ...this.volumes.create(),
+      // update networks
+      ...this.networks.remove(),
+      ...this.networks.create(),
+      // update containers
+      ...this.containers.remove(),
+      ...this.containers.create(),
+    ];
+    return cmds;
   }
 }

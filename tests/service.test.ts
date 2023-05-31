@@ -1,5 +1,5 @@
-import { Service, ServiceParams } from "../mod.ts";
-const params: ServiceParams = {
+import { Docker, DockerAutoParams } from "../mod.ts";
+const params: DockerAutoParams = {
   globals: {
     version: "production",
     dns: "itsdizygote.com",
@@ -66,5 +66,11 @@ const params: ServiceParams = {
     },
   ],
 };
-const service = new Service(params);
-console.log(service);
+
+// Service definition
+const docker = new Docker(params);
+
+// Test getters
+// console.log(service.docker.containers);
+docker.containers.get("api");
+const api = docker.containers.get("api");

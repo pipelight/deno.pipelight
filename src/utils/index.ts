@@ -14,19 +14,48 @@ export const uniqBy = <T>(a: Array<T>, key: string): Array<T> => {
 
 declare global {
   export interface Array<T> {
+    ctx: Record<string, any>;
     dedup<T>(key?: string): Array<T>;
-  }
-  export interface Map<K, V> {
-    dedup<K, V>(key?: string): Map<K, V>;
+    remove(): string[];
+    create(): string[];
+    send(remote: string[]): string[];
+    get<T>(key: string): T;
   }
 }
+
+Array.prototype.ctx = {};
+
 Array.prototype.dedup = function <T>(key?: string): Array<T> {
   return uniqBy(this, !!key ? key : "name");
 };
 
-Map.prototype.dedup = function <K, V>(key?: string): Map<K, V> {
-  const array = Array.from(this);
-  uniqBy(array, !!key ? key : "name");
-  const map = new Map(array.map((e) => (e[key as any], e)));
-  return map;
+Array.prototype.remove = function (): string[] {
+  const commands: string[] = [];
+  for (const e of this) {
+    commands.push(...e.remove());
+  }
+  return commands;
+};
+Array.prototype.create = function (): string[] {
+  const commands: string[] = [];
+  for (const e of this) {
+    commands.push(...e.create());
+  }
+  return commands;
+};
+Array.prototype.send = function (hosts: string[]): string[] {
+  const commands: string[] = [];
+  for (const e of this) {
+    commands.push(...e.send(hosts));
+  }
+  return commands;
+};
+Array.prototype.get = function (suffix: string) {
+  let full_name: string;
+  if (!!this.ctx) {
+    full_name = `${this.ctx.version}.${suffix}.${this.ctx.dns}`;
+  } else {
+    full_name = suffix;
+  }
+  return this.find((e) => e.name == full_name);
 };
