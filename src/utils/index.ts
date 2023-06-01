@@ -50,7 +50,7 @@ Array.prototype.send = function (hosts: string[]): string[] {
   }
   return commands;
 };
-Array.prototype.get = function (suffix: string) {
+Array.prototype.get = function <T>(suffix: string): T {
   let full_name: string;
   if (!!this.ctx) {
     full_name = `${this.ctx.version}.${suffix}.${this.ctx.dns}`;
