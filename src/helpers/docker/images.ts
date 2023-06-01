@@ -1,5 +1,6 @@
-// import { ssh } from "@helpers";
-import { ssh } from "../common/index.ts";
+// Common helpers
+import { ssh } from "../common/mod.ts";
+
 export interface ImageAutoParams {
   suffix: string;
   file?: string;

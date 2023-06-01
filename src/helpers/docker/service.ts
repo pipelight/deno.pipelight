@@ -14,7 +14,7 @@ import {
   Container,
   ContainerParams,
   ContainerAutoParams,
-} from "./index.ts";
+} from "./mod.ts";
 
 import { get_subnet } from "../../utils/index.ts";
 

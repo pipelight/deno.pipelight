@@ -7,7 +7,7 @@ import {
   MountNetworkParams,
   PortParams,
   Port,
-} from "./index.ts";
+} from "./mod.ts";
 
 export interface ContainerAutoParams {
   suffix: string;
