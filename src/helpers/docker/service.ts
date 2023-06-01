@@ -29,7 +29,6 @@ export interface DockerAutoParams {
   globals: Globals;
   containers: ContainerAutoParams[];
 }
-export class Service {}
 
 export interface DockerParams {
   images?: ImageParams[];
@@ -42,10 +41,16 @@ export class Docker {
   containers: Container[] = [];
   images: Image[] = [];
   volumes: Volume[] = [];
+  globals?: Globals;
   constructor(params: DockerParams | DockerAutoParams) {
     if ("globals" in params) {
       this.hydrate(this.convert(params));
+      this.globals = params.globals;
+      // add ctx to arrays
       this.containers.ctx = params.globals;
+      this.images.ctx = params.globals;
+      this.volumes.ctx = params.globals;
+      this.networks.ctx = params.globals;
     } else {
       this.hydrate(params);
     }
@@ -155,9 +160,13 @@ export class Docker {
     return docker;
   }
   dedup() {
+    type ValueOf<T> = T[keyof T];
     for (const [key, value] of Object.entries(this)) {
-      const uniq = value.dedup();
-      this[key as keyof Docker] = uniq;
+      if (!!value && Array.isArray(value)) {
+        const uniq = value.dedup();
+        // @ts-ignore
+        this[key as keyof Docker] = uniq as ValueOf<Docker>;
+      }
     }
   }
   update(): string[] {

@@ -71,6 +71,7 @@ const params: DockerAutoParams = {
 const docker = new Docker(params);
 
 // Test getters
-// console.log(service.docker.containers);
+console.log(docker);
+
 docker.containers.get("api");
 const api = docker.containers.get("api");
