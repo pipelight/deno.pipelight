@@ -92,7 +92,7 @@ const get_volume = (
 ): Volume | undefined => {
   let full_name: string;
   if (!!array.ctx) {
-    full_name = `${array.ctx.version}_${container_suffix}_${array.ctx.dns}_${suffix}`;
+    full_name = `${array.ctx.version}_${container_suffix}_${array.ctx.dns}__${suffix}`;
   } else {
     full_name = suffix;
   }
