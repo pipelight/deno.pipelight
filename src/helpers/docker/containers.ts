@@ -66,7 +66,7 @@ export class Container implements ContainerParams {
     }
     if (!!this.volumes) {
       for (const volume of this.volumes) {
-        str += `--volume ${volume.name}:${volume.path.inside} \ `;
+        str += `--volume ${volume.name}:${volume.path} \ `;
       }
     }
     if (!!this.envs) {

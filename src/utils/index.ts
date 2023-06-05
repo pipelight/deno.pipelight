@@ -20,9 +20,12 @@ declare global {
     create(): string[];
     send(remote: string[]): string[];
     get<T>(key: string): T;
+    backup(): string[];
+    restore(): string[];
   }
 }
 
+// Global
 Array.prototype.ctx = {};
 
 Array.prototype.dedup = function <T>(key?: string): Array<T> {
@@ -43,6 +46,7 @@ Array.prototype.create = function (): string[] {
   }
   return commands;
 };
+// Image
 Array.prototype.send = function (hosts: string[]): string[] {
   const commands: string[] = [];
   for (const e of this) {
@@ -50,6 +54,7 @@ Array.prototype.send = function (hosts: string[]): string[] {
   }
   return commands;
 };
+// Container
 Array.prototype.get = function <T>(suffix: string): T {
   let full_name: string;
   if (!!this.ctx) {
@@ -58,4 +63,19 @@ Array.prototype.get = function <T>(suffix: string): T {
     full_name = suffix;
   }
   return this.find((e) => e.name == full_name);
+};
+// Volumes
+Array.prototype.backup = function (): string[] {
+  const commands: string[] = [];
+  for (const e of this) {
+    commands.push(...e.backup());
+  }
+  return commands;
+};
+Array.prototype.restore = function (): string[] {
+  const commands: string[] = [];
+  for (const e of this) {
+    commands.push(...e.restore());
+  }
+  return commands;
 };
