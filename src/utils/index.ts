@@ -1,3 +1,5 @@
+import { Container, Volume } from "../helpers/docker/mod.ts";
+
 export const get_subnet = (ip: string): string => {
   const splitted = ip.split(".");
   const base = splitted.slice(0, splitted.length - 1).join(".");
@@ -20,6 +22,7 @@ declare global {
     create(): string[];
     send(remote: string[]): string[];
     get<T>(key: string): T;
+    get<T>(key: string, key2?: string): T;
     backup(): string[];
     restore(): string[];
   }
@@ -55,7 +58,7 @@ Array.prototype.send = function (hosts: string[]): string[] {
   return commands;
 };
 // Container
-Array.prototype.get = function <T>(suffix: string): T {
+Array.prototype.get = function <Container>(suffix: string): Container {
   let full_name: string;
   if (!!this.ctx) {
     full_name = `${this.ctx.version}.${suffix}.${this.ctx.dns}`;
@@ -64,7 +67,20 @@ Array.prototype.get = function <T>(suffix: string): T {
   }
   return this.find((e) => e.name == full_name);
 };
+
 // Volumes
+Array.prototype.get = function <Volume>(
+  suffix: string,
+  container_suffix?: string
+): Volume {
+  let full_name: string;
+  if (!!this.ctx) {
+    full_name = `${this.ctx.version}_${container_suffix}_${this.ctx.dns}_${suffix}`;
+  } else {
+    full_name = suffix;
+  }
+  return this.find((e) => e.name == full_name);
+};
 Array.prototype.backup = function (): string[] {
   const commands: string[] = [];
   for (const e of this) {
