@@ -9,6 +9,9 @@ import {
   Port,
 } from "./mod.ts";
 
+export interface DockerArgs {
+  [key: string]: string;
+}
 export interface ContainerAutoParams {
   suffix: string;
   image: ImageAutoParams;
@@ -40,7 +43,7 @@ export class Container implements ContainerParams {
     this.ports = params.ports;
   }
   // Create container and Run it
-  create(): string[] {
+  create(args?: DockerArgs): string[] {
     let host = {
       network: {
         public: "0.0.0.0",
@@ -74,6 +77,9 @@ export class Container implements ContainerParams {
         str += `--env ${env} \ `;
       }
     }
+    if (!!args) {
+    }
+
     str += `--name ${this.name} \ `;
     str += this.image.name;
     cmds.push(str);

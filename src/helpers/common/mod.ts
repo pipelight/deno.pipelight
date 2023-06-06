@@ -1,4 +1,4 @@
-import { Pipeline, Step } from "../../types/index.ts";
+import { Pipeline, Step, StepOrParallel, Parallel } from "../../types/index.ts";
 // Execute a bash string through deno
 export const exec = async (cmd: string) => {
   const process = new Deno.Command("sh", {
@@ -33,7 +33,7 @@ export const ssh = (hosts: string[], cmds: string[]): string[] => {
 // Composition api
 export const pipeline = (
   name: string,
-  fn: () => Step[],
+  fn: () => StepOrParallel[],
   options?: Omit<Pipeline, "steps" | "name">
 ): Pipeline => {
   const steps = fn();
@@ -56,4 +56,11 @@ export const step = (
     ...options,
   };
   return s;
+};
+export const parallel = (fn: () => Step[]): Parallel => {
+  const parallel = fn();
+  const p: Parallel = {
+    parallel,
+  };
+  return p;
 };

@@ -10,7 +10,7 @@ export interface Pipeline {
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
 }
-export class Pipeline implements Pipeline {
+export class Pipeline {
   name: string;
   steps: StepOrParallel[];
   triggers?: Trigger[];
@@ -29,7 +29,11 @@ export class Pipeline implements Pipeline {
     this.on_abortion = params.on_abortion;
   }
   add_trigger?(trigger: Trigger) {
-    !!this.triggers ? this.triggers.push(trigger) : (this.triggers = [trigger]);
+    if (!!this.triggers) {
+      this.triggers.push(trigger);
+    } else {
+      this.triggers = [trigger];
+    }
   }
 }
 

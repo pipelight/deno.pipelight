@@ -1,75 +1,35 @@
 import type { Config, Pipeline } from "./mod.ts";
 import { Docker, Container, Network } from "./mod.ts";
-import { pipeline, step, ssh } from "./mod.ts";
+import { pipeline, parallel, step, ssh } from "./mod.ts";
 
 // Global vars
-const version = "production";
-const service = "deno";
-const dns = "pipelight.dev";
-const params = {
-  host: "linode",
-  dns: "pipelight.dev",
-  version: version,
+const globals = {
+  version: "production",
+  service: "deno",
 };
-
-// Docker object creation
-const docker = new Docker({
-  images: [
-    {
-      name: `pipelight/doc:${version}`,
-    },
-  ],
-  containers: [
-    {
-      name: `${version}.${service}.${dns}`,
-      image: {
-        name: `pipelight/doc:${version}`,
-      },
-      ports: [{ out: 9080, in: 80 }],
-    },
-  ],
-});
-
-// Pipeline creation with Docker helpers
-const compositionPipe = pipeline(
-  "composition",
-  () => [
-    step("create declaration files", () => ["tsc --no-emit"], {
-      mode: "continue",
-    }),
-    // Create images locally and send it to remotes
-    step("build and send images", () => [
-      ...docker.images.create(),
-      ...docker.images.send(["localhost"]),
-    ]),
-    step(
-      "replace containers",
-      () =>
-        ssh(
-          ["localhost"],
-          [...docker.containers.remove(), ...docker.containers.create()]
-        ),
-      {
-        mode: "continue",
-      }
-    ),
-  ],
-  {
-    triggers: [
-      {
-        branches: ["dev"],
-        actions: ["manual"],
-      },
-      {
-        tags: ["*"],
-        actions: ["pre-push"],
-      },
-    ],
-  }
-);
 
 const config: Config = {
-  pipelines: [compositionPipe],
+  pipelines: [],
 };
 
+// Execute tests
+const tests: Pipeline = pipeline("test", () => [
+  parallel(() => [
+    step("test_docker+_helpers", () => [
+      "deno run --allow-all ./test/service.test.ts",
+    ]),
+    step("test_deployment_pipeline", () => [
+      "deno run --allow-all ./test/deploy.test.ts",
+    ]),
+    step("test_utils", () => ["deno run --allow-all ./test/utils.test.ts"]),
+  ]),
+]);
+
+// Set triggers
+tests.add_trigger!({
+  branches: ["dev", "master"],
+  actions: ["manual", "pre-push"],
+});
+
+config.pipelines?.push(tests);
 export default config;

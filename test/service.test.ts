@@ -68,10 +68,11 @@ const params: DockerAutoParams = {
 };
 
 // Service definition
-const docker = new Docker(params);
+export const docker = new Docker(params);
+// console.log(docker);
 
-console.log(docker);
+// Deployment Pipeline
 
 // Test getters
 const api = docker.containers.get("api");
-console.log(api);
+// console.log(api);
