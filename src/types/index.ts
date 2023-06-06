@@ -40,6 +40,7 @@ export class Pipeline {
 export type StepOrParallel = Step | Parallel;
 export type Parallel = {
   parallel: Step[];
+  mode?: Mode;
   on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
   on_success?: StepOrParallel[];

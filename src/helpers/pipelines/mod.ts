@@ -49,6 +49,7 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
       }
       return steps;
     });
+    networks.mode = "continue";
 
     const volumes = parallel(() => {
       const steps: Step[] = [];
