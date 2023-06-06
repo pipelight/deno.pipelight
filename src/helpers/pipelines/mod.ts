@@ -19,7 +19,8 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
       for (const e of docker.images) {
         steps.push(
           step(`build image ${e.name}`, () =>
-            host ? ssh([host], e.create()) : e.create()
+            // host ? ssh([host], e.create()) : e.create()
+            e.create()
           )
         );
       }
