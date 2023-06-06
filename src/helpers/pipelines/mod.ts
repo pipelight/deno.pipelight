@@ -42,8 +42,12 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
       const steps: Step[] = [];
       for (const e of docker.networks) {
         steps.push(
-          step(`ensure network ${e.name}`, () =>
-            host ? ssh([host], e.create()) : e.create()
+          step(
+            `ensure network ${e.name}`,
+            () => (host ? ssh([host], e.create()) : e.create()),
+            {
+              mode: "jump_next",
+            }
           )
         );
       }
