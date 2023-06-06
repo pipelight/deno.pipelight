@@ -1,5 +1,5 @@
 import { Docker, Container, Image } from "../../../mod.ts";
-import { Pipeline, Step } from "../../../mod.ts";
+import { Pipeline, Step, Mode } from "../../../mod.ts";
 import { pipeline, parallel, step, ssh } from "../../../mod.ts";
 import { v1 } from "https://deno.land/std/uuid/mod.ts";
 
@@ -49,7 +49,7 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
       }
       return steps;
     });
-    networks.mode = "continue";
+    networks.mode = "continue" as Mode;
 
     const volumes = parallel(() => {
       const steps: Step[] = [];
