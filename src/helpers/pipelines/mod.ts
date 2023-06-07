@@ -67,24 +67,26 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
       return steps;
     });
 
-    const containers = parallel(() => {
+    const clean_containers = parallel(() => {
       const steps: Step[] = [];
       for (const e of docker.containers) {
         steps.push(
-          step(
-            `clean containers ${e.name}`,
-            () => {
-              if (!!host) {
-                return ssh([host], e.remove());
-              } else {
-                return e.remove();
-              }
-            },
-            {
-              mode: "continue",
+          step(`clean containers ${e.name}`, () => {
+            if (!!host) {
+              return ssh([host], e.remove());
+            } else {
+              return e.remove();
             }
-          )
+          })
         );
+      }
+      return steps;
+    });
+    clean_containers.mode = "jump_next" as Mode;
+
+    const containers = parallel(() => {
+      const steps: Step[] = [];
+      for (const e of docker.containers) {
         steps.push(
           step(`run containers ${e.name}`, () => {
             if (!!host) {
@@ -111,6 +113,7 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
       steps.push(volumes);
     }
     if (!!docker.containers.length) {
+      steps.push(clean_containers);
       steps.push(containers);
     }
     return steps;
