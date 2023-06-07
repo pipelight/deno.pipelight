@@ -88,7 +88,16 @@ export class Container implements ContainerParams {
   // Delete container
   remove(): string[] {
     const cmds: string[] = [];
-    let str = `docker stop ${this.name}` + " && " + `docker rm ${this.name}`;
+    let str =
+      `docker container stop ${this.name}` +
+      " && " +
+      `docker container rm ${this.name}`;
+    cmds.push(str);
+    return cmds;
+  }
+  restart(): string[] {
+    const cmds: string[] = [];
+    let str = `docker container restart ${this.name}`;
     cmds.push(str);
     return cmds;
   }
