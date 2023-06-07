@@ -71,11 +71,26 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
       const steps: Step[] = [];
       for (const e of docker.containers) {
         steps.push(
-          step(`upgrade containers ${e.name}`, () => {
+          step(
+            `clean containers ${e.name}`,
+            () => {
+              if (!!host) {
+                return ssh([host], e.remove());
+              } else {
+                return e.remove();
+              }
+            },
+            {
+              mode: "continue",
+            }
+          )
+        );
+        steps.push(
+          step(`run containers ${e.name}`, () => {
             if (!!host) {
-              return [...ssh([host], e.remove()), ...ssh([host], e.create())];
+              return ssh([host], e.create());
             } else {
-              return [...e.remove(), ...e.create()];
+              return e.create();
             }
           })
         );
