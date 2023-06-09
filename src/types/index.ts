@@ -29,7 +29,7 @@ export class Pipeline {
     this.on_abortion = params.on_abortion;
   }
   add_trigger?(trigger: Trigger) {
-    if (!!this.triggers) {
+    if (!!this.triggers && this.triggers.length != 0) {
       this.triggers.push(trigger);
     } else {
       this.triggers = [trigger];

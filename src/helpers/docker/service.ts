@@ -117,7 +117,7 @@ export class Docker {
           // Link volume definition to container
           container.volumes.push({
             name: name,
-            path: volume.path,
+            target: volume.target,
           });
         }
       }

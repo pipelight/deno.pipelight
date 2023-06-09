@@ -1,18 +1,21 @@
 export interface MountVolumeParams {
   name: string;
-  // path inside container
-  path: string;
+  target: string;
 }
 export interface MountVolumeAutoParams {
   suffix: string;
+  target: string;
+}
+export interface BindMountParams {
+  // path in host
+  source: string;
   // path inside container
-  path: string;
+  target: string;
 }
 
 export interface VolumeSave {
-  host: {
-    path: string;
-  };
+  source: string;
+  compressed?: boolean;
 }
 
 export interface VolumeParams {
@@ -25,9 +28,8 @@ export class Volume implements VolumeParams {
   constructor(params: VolumeParams) {
     this.name = params.name;
     this.save = {
-      host: {
-        path: "~/.docker/volumes",
-      },
+      source: "~/.docker/volumes",
+      compressed: true,
     };
   }
   create(): string[] {
@@ -48,12 +50,12 @@ export class Volume implements VolumeParams {
   backup(): string[] {
     // backup volume to host archive
     const cmds: string[] = [];
-    cmds.push(`mkdir -p ${this.save.host.path}`);
+    cmds.push(`mkdir -p ${this.save.source}`);
     let str = `
       docker run \
         --rm \
         --volume ${this.name}:/from \
-        --volume ${this.save.host.path}:/to \
+        --volume ${this.save.source}:/to \
         archlinux \
         tar -cJf /to/${this.name}.tar.xz \
         --directory="/from" .
@@ -67,7 +69,7 @@ export class Volume implements VolumeParams {
     let str = `
       docker run \
         --rm \
-        --volume ${this.save.host.path}:/from\
+        --volume ${this.save.source}:/from\
         --volume ${this.name}:/to \
         archlinux \
         tar -xf /from/${this.name}.tar.xz \

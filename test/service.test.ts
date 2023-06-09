@@ -20,9 +20,7 @@ const params: DockerAutoParams = {
       volumes: [
         {
           suffix: "data",
-          path: {
-            inside: "/var/lib/postgresql/data",
-          },
+          target: "/var/lib/postgresql/data",
         },
       ],
     },
@@ -41,9 +39,7 @@ const params: DockerAutoParams = {
       volumes: [
         {
           suffix: "data",
-          path: {
-            inside: "/data",
-          },
+          target: "/data",
         },
       ],
       // envs: [

@@ -1,6 +1,7 @@
 // Volume Helpers
 export type {
   VolumeParams,
+  BindMountParams,
   MountVolumeParams,
   MountVolumeAutoParams,
 } from "./volumes.ts";
