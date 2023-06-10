@@ -68,6 +68,8 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
       }
       return steps;
     });
+    clean_volumes.mode = "jump_next" as Mode;
+
     const volumes = parallel(() => {
       const steps: Step[] = [];
       for (const e of docker.volumes) {
