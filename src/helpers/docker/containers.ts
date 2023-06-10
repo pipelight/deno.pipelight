@@ -1,7 +1,7 @@
 import {
   MountVolumeAutoParams,
   MountVolumeParams,
-  BindMountParams,
+  VolumeParams,
   ImageAutoParams,
   ImageParams,
   MountNetworkAutoParams,
@@ -25,7 +25,7 @@ export interface ContainerParams {
   name: string;
   image: Pick<ImageParams, "name">;
   networks?: MountNetworkParams[];
-  volumes?: Array<MountVolumeParams | BindMountParams>;
+  volumes?: MountVolumeParams[];
   ports?: PortParams[];
   envs?: string[];
 }
@@ -33,7 +33,7 @@ export class Container implements ContainerParams {
   name: string;
   image: Pick<ImageParams, "name">;
   networks?: MountNetworkParams[];
-  volumes?: Array<MountVolumeParams | BindMountParams>;
+  volumes?: MountVolumeParams[];
   ports?: PortParams[];
   envs?: string[];
   constructor(params: ContainerParams) {
@@ -71,11 +71,7 @@ export class Container implements ContainerParams {
     if (!!this.volumes) {
       for (const volume of this.volumes) {
         // Check if named volume or bind mount
-        if ("source" in volume) {
-          str += `--volume ${volume.source}:${volume.target} \ `;
-        } else {
-          str += `--volume ${volume.name}:${volume.target} \ `;
-        }
+        str += `--volume ${volume.name}:${volume.target} \ `;
       }
     }
     if (!!this.envs) {

@@ -58,6 +58,13 @@ const params: DockerAutoParams = {
           // ip: env.API_IP,
         },
       ],
+      volumes: [
+        {
+          suffix: "data",
+          source: "~/data",
+          target: "/data",
+        },
+      ],
       ports: [{ out: 9282, in: 9000 }],
     },
   ],

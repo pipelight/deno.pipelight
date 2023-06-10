@@ -106,14 +106,26 @@ export class Docker {
         for (const volume of e.volumes) {
           // Volume definition
           let name: string;
+          let source: string;
           if ("name" in volume) {
             name = `${volume.name}`;
           } else {
             name = `${version}_${e.suffix}_${dns}__${volume.suffix}`;
           }
-          docker.volumes?.push({
-            name: name,
-          });
+          if ("source" in volume) {
+            if (!!volume.source) {
+              source = volume.source!;
+              docker.volumes?.push({
+                name: name,
+                source: source,
+              });
+            }
+          } else {
+            docker.volumes?.push({
+              name: name,
+            });
+          }
+
           // Link volume definition to container
           container.volumes.push({
             name: name,

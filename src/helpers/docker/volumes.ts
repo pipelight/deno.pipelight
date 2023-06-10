@@ -1,41 +1,45 @@
-export interface MountVolumeParams {
-  name: string;
-  target: string;
-}
-export interface MountVolumeAutoParams {
-  suffix: string;
-  target: string;
-}
-export interface BindMountParams {
-  // path in host
-  source: string;
-  // path inside container
-  target: string;
-}
-
+// Args to save volumes data to host
 export interface VolumeSave {
   source: string;
   compressed?: boolean;
 }
 
+// Args for volume linking to containers
+export interface MountVolumeParams {
+  name: string;
+  target: string; // path inside container
+}
+export interface MountVolumeAutoParams {
+  suffix: string;
+  source?: string; // path in host
+  target: string; // path inside container
+}
+
+// Args for volume creation
 export interface VolumeParams {
   name: string;
+  source?: string; // path in host
 }
-export class Volume implements VolumeParams {
+
+export class Volume {
   name: string;
-  // backup params
-  save: VolumeSave;
+  source?: string;
+  save: VolumeSave; // backup params
   constructor(params: VolumeParams) {
     this.name = params.name;
     this.save = {
       source: "~/.docker/volumes",
       compressed: true,
     };
+    this.source = params.source;
   }
   create(): string[] {
     // create or update volume
     const cmds: string[] = [];
     let str = `docker volume create \ `;
+    if (!!this.source) {
+      str += `-d local-persist \ -o mountpoint=${this.source} \ `;
+    }
     str += `--name ${this.name}`;
     cmds.push(str);
     return cmds;
