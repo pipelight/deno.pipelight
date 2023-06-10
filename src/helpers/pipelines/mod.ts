@@ -55,6 +55,19 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
     });
     networks.mode = "continue" as Mode;
 
+    const clean_volumes = parallel(() => {
+      const steps: Step[] = [];
+      for (const e of docker.volumes) {
+        if (!!e.source) {
+          steps.push(
+            step(`clean local persisted volumes ${e.name}`, () =>
+              host ? ssh([host], e.remove()) : e.remove()
+            )
+          );
+        }
+      }
+      return steps;
+    });
     const volumes = parallel(() => {
       const steps: Step[] = [];
       for (const e of docker.volumes) {
@@ -109,11 +122,14 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
     if (!!docker.networks.length) {
       steps.push(networks);
     }
+    if (!!docker.containers.length) {
+      steps.push(clean_containers);
+    }
     if (!!docker.volumes.length) {
+      if (!!clean_volumes.parallel.length) steps.push(clean_volumes);
       steps.push(volumes);
     }
     if (!!docker.containers.length) {
-      steps.push(clean_containers);
       steps.push(containers);
     }
     return steps;
