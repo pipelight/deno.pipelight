@@ -49,9 +49,6 @@ const params: DockerAutoParams = {
     },
     {
       suffix: "api",
-      image: {
-        suffix: "api",
-      },
       networks: [
         {
           suffix: "net",

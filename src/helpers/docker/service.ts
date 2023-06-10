@@ -90,6 +90,11 @@ export class Docker {
       // Image definition
       if (!!e.image) {
         docker.images?.push({
+          name: `${dns}/${e.image.suffix}:${version}`,
+          file: `.docker/Dockerfile.${e.image.suffix}`,
+        });
+      } else {
+        docker.images?.push({
           name: `${dns}/${e.suffix}:${version}`,
           file: `.docker/Dockerfile.${e.suffix}`,
         });

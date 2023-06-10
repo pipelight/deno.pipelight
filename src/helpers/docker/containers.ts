@@ -15,7 +15,7 @@ export interface DockerArgs {
 }
 export interface ContainerAutoParams {
   suffix: string;
-  image: ImageAutoParams;
+  image?: ImageAutoParams;
   volumes?: Array<MountVolumeAutoParams | MountVolumeParams>;
   networks?: Array<MountNetworkAutoParams | MountNetworkParams>;
   ports?: PortParams[];
