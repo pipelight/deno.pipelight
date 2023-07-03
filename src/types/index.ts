@@ -1,5 +1,6 @@
 export type Config = {
   pipelines?: Pipeline[];
+  crocuda?: Credentials[];
 };
 export interface Pipeline {
   name: string;
@@ -82,6 +83,11 @@ export type Action =
   | "pre-auto-gc"
   | "post-rewrite"
   | "pre-push"
-  | "manual";
+  | "manual"
+  | "watch";
 
 export type Mode = "stop" | "jump_next" | "continue";
+
+export type Credentials = {
+  user: string;
+};

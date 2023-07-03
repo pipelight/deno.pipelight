@@ -1,6 +1,6 @@
 import type { Config, Pipeline } from "./mod.ts";
 import { Docker, Container, Network } from "./mod.ts";
-import { pipeline, parallel, step, ssh } from "./mod.ts";
+import { configuration, pipeline, parallel, step, ssh } from "./mod.ts";
 
 // Global vars
 const globals = {
@@ -8,9 +8,9 @@ const globals = {
   service: "deno",
 };
 
-const config: Config = {
-  pipelines: [],
-};
+// const config: Config = {
+//   pipelines: [],
+// };
 
 // Execute tests
 const tests: Pipeline = pipeline("test", () => [
@@ -31,5 +31,8 @@ tests.add_trigger!({
   actions: ["manual", "pre-push"],
 });
 
-config.pipelines?.push(tests);
+const config = configuration(() => [tests]);
+
 export default config;
+
+// config.pipelines?.push(tests);
