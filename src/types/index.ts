@@ -113,3 +113,11 @@ export type Event = {
 export type Credentials = {
   user: string;
 };
+
+export enum Verbosity {
+  Error,
+  Warn,
+  Info,
+  Debug,
+  Trace,
+}
