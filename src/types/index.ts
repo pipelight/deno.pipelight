@@ -4,6 +4,7 @@ export type Config = {
 };
 export interface Pipeline {
   name: string;
+  event?: Event;
   steps: StepOrParallel[];
   triggers?: Trigger[];
   on_started?: StepOrParallel[];
@@ -87,6 +88,14 @@ export type Action =
   | "watch";
 
 export type Mode = "stop" | "jump_next" | "continue";
+
+export type Event = {
+  trigger: Trigger;
+  date: string;
+  pid: number;
+  pgid: number;
+  sid: number;
+};
 
 export type Credentials = {
   user: string;
