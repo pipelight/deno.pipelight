@@ -14,6 +14,8 @@ export interface Pipeline {
 }
 export class Pipeline {
   name: string;
+  event?: Event;
+  status?: Status | string;
   steps: StepOrParallel[];
   triggers?: Trigger[];
   on_started?: StepOrParallel[];
@@ -23,7 +25,9 @@ export class Pipeline {
   constructor(params: Pipeline) {
     this.name = params.name;
     this.triggers = params.triggers;
+    this.event = params.event;
     this.steps = params.steps;
+    this.status = params.status;
     this.on_started = params.on_started;
     this.on_failure = params.on_failure;
     this.on_abortion = params.on_abortion;
@@ -60,34 +64,43 @@ export type Step = {
 export type Trigger = TriggerBranch | TriggerTag;
 export type TriggerBranch = {
   branches: string[];
-  actions?: Action[];
+  actions?: Action[] | string[];
 };
 export type TriggerTag = {
   tags: string[];
-  actions?: Action[];
+  actions?: Action[] | string[];
 };
-export type Action =
-  | "applypatch-msg"
-  | "pre-applypatch"
-  | "post-apply-patch"
-  | "pre-commit"
-  | "prepare-commit-msg"
-  | "commit-msg"
-  | "post-commit"
-  | "pre-rebase"
-  | "post-checkout"
-  | "post-merge"
-  | "pre-receive"
-  | "update"
-  | "post-receive"
-  | "post-update"
-  | "pre-auto-gc"
-  | "post-rewrite"
-  | "pre-push"
-  | "manual"
-  | "watch";
+export enum Action {
+  applypatchMsg = "applypatch-msg",
+  preApplypatch = "pre-applypatch",
+  postApplyPatch = "post-apply-patch",
+  preCommit = "pre-commit",
+  prepareCommitMsg = "prepare-commit-msg",
+  commitMsg = "commit-msg",
+  postCommit = "post-commit",
+  preRebase = "pre-rebase",
+  postCheckout = "post-checkout",
+  postMerge = "post-merge",
+  preReceive = "pre-receive",
+  update = "update",
+  postReceive = "post-receive",
+  postUpdate = "post-update",
+  preAutoGc = "pre-auto-gc",
+  postRewrite = "post-rewrite",
+  prePush = "pre-push",
+  manual = "manual",
+  watch = "watch",
+}
 
 export type Mode = "stop" | "jump_next" | "continue";
+
+export enum Status {
+  Started = "Started",
+  Running = "Running",
+  Succeeded = "Succeeded",
+  Aborted = "Aborted",
+  Failed = "Failed",
+}
 
 export type Event = {
   trigger: Trigger;
