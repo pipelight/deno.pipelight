@@ -1,6 +1,7 @@
 import { exists } from "../src/utils/index.ts";
-
-const image = {
-  name: "alpine:latest",
-};
-await exists(image);
+Deno.test("url test", async () => {
+  const image = {
+    name: "alpine:latest",
+  };
+  await exists(image);
+});

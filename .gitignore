@@ -1,2 +1,4 @@
 node_modules
 .pipelight/logs
+npm
+test

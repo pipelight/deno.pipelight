@@ -24,6 +24,9 @@ const tests: Pipeline = pipeline("test", () => [
     step("test_utils", () => ["deno run --allow-all ./test/utils.test.ts"]),
   ]),
 ]);
+const npm: Pipeline = pipeline("npm_publish", () => [
+  step("generate npm package", () => ["deno run -A scripts/build_npm.ts"]),
+]);
 
 // Set triggers
 tests.add_trigger!({
@@ -31,7 +34,7 @@ tests.add_trigger!({
   actions: ["manual", "pre-push"],
 });
 
-const config = configuration(() => [tests]);
+const config = configuration(() => [tests, npm]);
 
 export default config;
 

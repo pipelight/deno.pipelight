@@ -5,20 +5,6 @@ import {
   StepOrParallel,
   Parallel,
 } from "../../types/index.ts";
-// Execute a bash string through deno
-export const exec = async (cmd: string) => {
-  const process = new Deno.Command("sh", {
-    args: ["-c", cmd],
-  });
-  const { code, stdout, stderr } = await process.output();
-  const res = new TextDecoder().decode(stdout).replace(/\s+$/, "");
-  const err = new TextDecoder().decode(stderr).replace(/\s+$/, "");
-  if (!code) {
-    return res;
-  } else {
-    return err;
-  }
-};
 
 // When multiple ssh session are requested by pipelight, it goes to fast for the tcp connection to keep up.
 // It needs to be killed before requesting for another  -> "keepAlive = No"
