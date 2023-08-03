@@ -26,7 +26,7 @@ await build({
       "deployment",
       "typescript",
     ],
-    version: "0.6.1-2",
+    version: "0.6.69-2",
     description: "Type definition for Pipelight",
     author: "Areskul <areskul@areskul.com>",
     license: "MIT",

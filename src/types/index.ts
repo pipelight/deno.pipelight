@@ -71,25 +71,42 @@ export type TriggerTag = {
   actions?: Action[] | string[];
 };
 export enum Action {
-  applypatchMsg = "applypatch-msg",
-  preApplypatch = "pre-applypatch",
-  postApplyPatch = "post-apply-patch",
-  preCommit = "pre-commit",
-  prepareCommitMsg = "prepare-commit-msg",
-  commitMsg = "commit-msg",
-  postCommit = "post-commit",
-  preRebase = "pre-rebase",
-  postCheckout = "post-checkout",
-  postMerge = "post-merge",
-  preReceive = "pre-receive",
-  update = "update",
-  postReceive = "post-receive",
-  postUpdate = "post-update",
-  preAutoGc = "pre-auto-gc",
-  postRewrite = "post-rewrite",
-  prePush = "pre-push",
-  manual = "manual",
-  watch = "watch",
+  // mail hooks
+  ApplypatchMsg = "applypatch-msg",
+  PreApplypatch = "pre-applypatch",
+  PostApplypatch = "post-applypatch",
+  SendemailValidate = "sendemail-validate",
+  // client hooks
+  PreCommit = "pre-commit",
+  PreMergeCommit = "pre-merge-commit",
+  PrepareCommitMsg = "prepare-commit-msg",
+  CommitMsg = "commit-msg",
+  PostCommit = "post-commit",
+  // other client hooks
+  PreRebase = "pre-rebase",
+  PostCheckout = "post-checkout",
+  PostMerge = "post-merge",
+  PrePush = "pre-push",
+  PostRewrite = "post-rewrite",
+  PreAutoGc = "pre-auto-gc",
+  FsmonitorWatchman = "fsmonitor-watchman",
+  PostIndexChange = "past-index-change",
+  // p4
+  P4Changelist = "p4-changelist",
+  P4PrepareChangelist = "p4-prepare-changelist",
+  P4PostChangelist = "p4-post-changelist",
+  P4PreSubmit = "p4-pre-submit",
+  // server-side hooks
+  PreReceive = "pre-receive",
+  Update = "update",
+  ProcReceive = "proc-receive",
+  PostReceive = "post-receive",
+  PostUpdate = "post-update",
+  RefrenceTransaction = "reference-transaction",
+  PushToCheckout = "push-to-checkout",
+  // special flags
+  Manual = "manual",
+  Watch = "watch",
 }
 
 export type Mode = "stop" | "jump_next" | "continue";
