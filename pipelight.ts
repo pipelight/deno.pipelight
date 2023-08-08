@@ -13,7 +13,7 @@ const globals = {
 // };
 
 // Execute tests
-const tests: Pipeline = pipeline("test", () => [
+const tests = pipeline("test", () => [
   parallel(() => [
     step("test_docker+_helpers", () => [
       "deno run --allow-all ./test/service.test.ts",

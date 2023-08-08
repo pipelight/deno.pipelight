@@ -75,11 +75,11 @@ Deno.test("url test", () => {
   const { deploy } = useTemplate();
   const my_pipeline = deploy(docker);
   // const my_pipeline = deploy_single_host(docker, "linode");
-  console.log(
-    Deno.inspect(my_pipeline, {
-      showHidden: false,
-      depth: undefined,
-      colors: true,
-    })
-  );
+  // console.debug(
+  //   Deno.inspect(my_pipeline, {
+  //     showHidden: false,
+  //     depth: undefined,
+  //     colors: true,
+  //   })
+  // );
 });
