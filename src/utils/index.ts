@@ -1,5 +1,4 @@
 import { Container, Volume } from "../helpers/docker/mod.ts";
-import { exec } from "../helpers/common/mod.ts";
 import type { ImageParams } from "../helpers/docker/mod.ts";
 export * from "./global.ts";
 

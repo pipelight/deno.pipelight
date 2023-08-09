@@ -10,9 +10,6 @@ import {
   Port,
 } from "./mod.ts";
 
-export interface DockerArgs {
-  [key: string]: string;
-}
 export interface ContainerAutoParams {
   suffix: string;
   image?: ImageAutoParams;
@@ -20,6 +17,7 @@ export interface ContainerAutoParams {
   networks?: Array<MountNetworkAutoParams | MountNetworkParams>;
   ports?: PortParams[];
   envs?: string[];
+  args?: Record<string, string>[];
 }
 export interface ContainerParams {
   name: string;
@@ -28,6 +26,7 @@ export interface ContainerParams {
   volumes?: MountVolumeParams[];
   ports?: PortParams[];
   envs?: string[];
+  args?: Record<string, string>[];
 }
 export class Container implements ContainerParams {
   name: string;
@@ -36,15 +35,19 @@ export class Container implements ContainerParams {
   volumes?: MountVolumeParams[];
   ports?: PortParams[];
   envs?: string[];
+  args?: Record<string, string>[];
   constructor(params: ContainerParams) {
     this.name = params.name;
     this.image = params.image;
     this.volumes = params.volumes;
     this.networks = params.networks;
     this.ports = params.ports;
+    // handcraft
+    this.envs = params.envs;
+    this.args = params.args;
   }
   // Create container and Run it
-  create(args?: DockerArgs): string[] {
+  create(): string[] {
     let host = {
       network: {
         public: "0.0.0.0",
@@ -74,14 +77,16 @@ export class Container implements ContainerParams {
         str += `--volume ${volume.name}:${volume.target} \ `;
       }
     }
+    if (!!this.args) {
+      for (const [key, value] of Object.entries(this.args)) {
+        str += `--${key} ${value} \ `;
+      }
+    }
     if (!!this.envs) {
       for (const env of this.envs) {
         str += `--env ${env} \ `;
       }
     }
-    if (!!args) {
-    }
-
     str += `--name ${this.name} \ `;
     str += this.image.name;
     cmds.push(str);

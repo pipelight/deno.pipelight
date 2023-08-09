@@ -1,5 +1,5 @@
 // Types
-export * from "./src/types/index.ts";
+export * from "./src/types/mod.ts";
 // Common Helpers
 export * from "./src/helpers/common/mod.ts";
 export * from "./src/helpers/common/mod.ts";

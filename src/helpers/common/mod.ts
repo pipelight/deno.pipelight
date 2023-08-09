@@ -1,18 +1,18 @@
-import { Pipeline, Step, StepOrParallel, Parallel } from "../../types/index.ts";
-// Execute a bash string through deno
-export const exec = async (cmd: string) => {
-  const process = new Deno.Command("sh", {
-    args: ["-c", cmd],
-  });
-  const { code, stdout, stderr } = await process.output();
-  const res = new TextDecoder().decode(stdout).replace(/\s+$/, "");
-  const err = new TextDecoder().decode(stderr).replace(/\s+$/, "");
-  if (!code) {
-    return res;
-  } else {
-    return err;
-  }
-};
+import type {
+  Config,
+  Pipeline,
+  StepOrParallel,
+  Parallel,
+  Step,
+} from "@struct/mod.ts";
+
+import {
+  // class
+  ConfigClass,
+  PipelineClass,
+  ParallelClass,
+  StepClass,
+} from "@struct/mod.ts";
 
 // When multiple ssh session are requested by pipelight, it goes to fast for the tcp connection to keep up.
 // It needs to be killed before requesting for another  -> "keepAlive = No"
@@ -31,15 +31,28 @@ export const ssh = (hosts: string[], cmds: string[]): string[] => {
 };
 
 // Composition api
+export const configuration = (
+  fn: () => Pipeline[],
+  options?: Omit<Config, "pipelines">
+): Config => {
+  const pipelines = fn().map((e) => new PipelineClass(e));
+  const config = {
+    pipelines,
+    ...options,
+  };
+  // export default config;
+  return config;
+};
+
 export const pipeline = (
   name: string,
   fn: () => StepOrParallel[],
   options?: Omit<Pipeline, "steps" | "name">
-): Pipeline => {
+): PipelineClass => {
   const steps = fn();
-  const p: Pipeline = new Pipeline({
+  const p: Pipeline = new PipelineClass({
     name,
-    steps,
+    steps: steps as StepOrParallel[],
     ...options,
   });
   return p;
@@ -48,19 +61,19 @@ export const step = (
   name: string,
   fn: () => string[],
   options?: Omit<Step, "commands" | "name">
-): Step => {
+): StepClass => {
   const commands = fn();
-  const s = {
+  const s = new StepClass({
     name,
     commands,
     ...options,
-  };
+  });
   return s;
 };
-export const parallel = (fn: () => Step[]): Parallel => {
+export const parallel = (fn: () => Step[]): ParallelClass => {
   const parallel = fn();
-  const p: Parallel = {
-    parallel,
-  };
+  const p = new ParallelClass({
+    parallel: parallel as Step[],
+  });
   return p;
 };
