@@ -4,7 +4,7 @@ import type {
   StepOrParallel,
   Parallel,
   Step,
-} from "@struct/mod.ts";
+} from "../../../mod.ts";
 
 import {
   // class
@@ -12,7 +12,7 @@ import {
   PipelineClass,
   ParallelClass,
   StepClass,
-} from "@struct/mod.ts";
+} from "../../../mod.ts";
 
 // When multiple ssh session are requested by pipelight, it goes to fast for the tcp connection to keep up.
 // It needs to be killed before requesting for another  -> "keepAlive = No"
