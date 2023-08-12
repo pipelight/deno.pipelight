@@ -33,13 +33,11 @@ export class Image implements ImageParams {
     cmds.push(str);
     return cmds;
   }
-  send(hosts: string[]): string[] {
+  send(host: string): string[] {
     const cmds: string[] = [];
-    for (const host of hosts) {
-      let str = `docker save ${this.name}`;
-      str += " | " + ssh([host], ["docker load"]);
-      cmds.push(str);
-    }
+    let str = `docker save ${this.name}`;
+    str += " | " + ssh(host, () => ["docker load"]);
+    cmds.push(str);
     return cmds;
   }
 }

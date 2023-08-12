@@ -55,7 +55,7 @@ export class Pipeline {
     this.on_abortion = to_step_or_parallel(params.on_abortion);
     this.on_success = to_step_or_parallel(params.on_success);
   }
-  add_trigger?(trigger: Trigger) {
+  trigger?(trigger: Trigger) {
     if (!!this.triggers && this.triggers.length != 0) {
       this.triggers.push(trigger);
     } else {

@@ -5,7 +5,6 @@ import { v1 } from "https://deno.land/std/uuid/mod.ts";
 
 export const useTemplate = () => ({
   deploy,
-  test,
 });
 
 // Deploy to a single host
@@ -31,9 +30,7 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
     const send_images = parallel(() => {
       const steps: Step[] = [];
       for (const e of docker.images) {
-        steps.push(
-          step(`send image ${e.name} to remote`, () => e.send([host!]))
-        );
+        steps.push(step(`send image ${e.name} to remote`, () => e.send(host!)));
       }
       return steps;
     });
@@ -44,7 +41,7 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
         steps.push(
           step(
             `ensure network ${e.name}`,
-            () => (host ? ssh([host], e.create()) : e.create()),
+            () => (host ? ssh(host, () => e.create()) : e.create()),
             {
               mode: "jump_next",
             }
@@ -61,7 +58,7 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
         if (!!e.source) {
           steps.push(
             step(`clean local persisted volumes ${e.name}`, () =>
-              host ? ssh([host], e.remove()) : e.remove()
+              host ? ssh(host, () => e.remove()) : e.remove()
             )
           );
         }
@@ -75,7 +72,7 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
       for (const e of docker.volumes) {
         steps.push(
           step(`ensure volumes ${e.name}`, () =>
-            host ? ssh([host], e.create()) : e.create()
+            host ? ssh(host, () => e.create()) : e.create()
           )
         );
       }
@@ -88,7 +85,7 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
         steps.push(
           step(`clean containers ${e.name}`, () => {
             if (!!host) {
-              return ssh([host], e.remove());
+              return ssh(host, () => e.remove());
             } else {
               return e.remove();
             }
@@ -105,7 +102,7 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
         steps.push(
           step(`run containers ${e.name}`, () => {
             if (!!host) {
-              return ssh([host], e.create());
+              return ssh(host, () => e.create());
             } else {
               return e.create();
             }
@@ -136,36 +133,6 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
     }
     return steps;
   });
-
-  return my_pipeline;
-};
-
-const test = (image: Image, commands: string[], host?: string): Pipeline => {
-  const container = new Container({
-    name: "test_" + v1.generate(),
-    image: {
-      name: image.name,
-    },
-  });
-  const clean: Step = step("delete container", () =>
-    host ? ssh([host], container.exec(commands)) : container.exec(commands)
-  );
-
-  const my_pipeline = pipeline("run_tests_in_container", () => [
-    step("ensure image", () => image.create(), {
-      mode: "jump_next",
-    }),
-    step("build container", () =>
-      host ? ssh([host], container.create()) : container.create()
-    ),
-    step("run in container", () =>
-      host ? ssh([host], container.exec(commands)) : container.exec(commands)
-    ),
-  ]);
-
-  my_pipeline.on_success = [clean];
-  my_pipeline.on_failure = [clean];
-  my_pipeline.on_abortion = [clean];
 
   return my_pipeline;
 };
