@@ -6,4 +6,4 @@ export * from "./src/helpers/common/mod.ts";
 // Docker Helpers
 export * from "./src/helpers/docker/mod.ts";
 // Pipeline templates
-export * from "./src/helpers/pipelines/mod.ts";
+export * from "./src/templates/mod.ts";

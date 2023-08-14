@@ -37,7 +37,6 @@ export type {
 
 export {
   // class
-  Config as ConfigClass,
   Pipeline as PipelineClass,
   Parallel as ParallelClass,
   Step as StepClass,

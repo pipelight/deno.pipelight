@@ -6,6 +6,20 @@ import { ssh } from "./mod.ts";
 import { pipeline, step, parallel } from "./mod.ts";
 import { Pipeline } from "../../types/class.ts";
 
+Deno.test("chain pipeline triggers declaration", () => {
+  const res = pipeline("test", () => [step("test", () => ["test"])])
+    //First trigger
+    .trigger({
+      branches: ["master"],
+      actions: ["pre-push"],
+    })
+    //Second trigger
+    .trigger({
+      branches: ["master"],
+      actions: ["pre-push"],
+    });
+});
+
 Deno.test("common pipeline helpers", () => {
   const instance = new Pipeline({
     name: "test",

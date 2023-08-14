@@ -8,25 +8,12 @@ import type {
 
 import {
   // class
-  ConfigClass,
   PipelineClass,
   ParallelClass,
   StepClass,
 } from "../../../mod.ts";
 
 // Composition api
-export const configuration = (
-  fn: () => Pipeline[],
-  options?: Omit<Config, "pipelines">
-): Config => {
-  const pipelines = fn().map((e) => new PipelineClass(e));
-  const config = {
-    pipelines,
-    ...options,
-  };
-  // export default config;
-  return config;
-};
 
 export const pipeline = (
   name: string,
@@ -34,7 +21,7 @@ export const pipeline = (
   options?: Omit<Pipeline, "steps" | "name">
 ): PipelineClass => {
   const steps = fn();
-  const p: Pipeline = new PipelineClass({
+  const p = new PipelineClass({
     name,
     steps: steps as StepOrParallel[],
     ...options,

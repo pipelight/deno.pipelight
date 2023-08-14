@@ -17,8 +17,8 @@ export type {
 } from "./networks.ts";
 export { Port, Network } from "./networks.ts";
 // Container Helpers
-export type { ContainerParams, ContainerAutoParams } from "./containers.ts";
-export { Container } from "./containers.ts";
+export type { ContainerParams, ContainerAutoParams } from "./containers/mod.ts";
+export { Container } from "./containers/mod.ts";
 // Service and Docker Helpers
 export type { DockerAutoParams, DockerParams } from "./service.ts";
 export { Docker } from "./service.ts";

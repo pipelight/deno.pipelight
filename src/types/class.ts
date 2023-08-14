@@ -15,13 +15,6 @@ import {
   Mode,
 } from "./cast.ts";
 
-export class Config {
-  pipelines?: Pipeline[];
-  constructor(params: ConfigParams) {
-    this.pipelines = params.pipelines;
-  }
-}
-
 // Transform StepOrParallel[] to Step[] or Parallel[]
 const to_step_or_parallel = (steps?: StepOrParallelParams[]) => {
   if (!!steps) {
@@ -55,12 +48,13 @@ export class Pipeline {
     this.on_abortion = to_step_or_parallel(params.on_abortion);
     this.on_success = to_step_or_parallel(params.on_success);
   }
-  trigger?(trigger: Trigger) {
+  trigger(trigger: Trigger) {
     if (!!this.triggers && this.triggers.length != 0) {
       this.triggers.push(trigger);
     } else {
       this.triggers = [trigger];
     }
+    return this;
   }
 }
 export type StepOrParallel = Step | Parallel;
