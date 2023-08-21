@@ -48,7 +48,7 @@ export class Pipeline {
     this.on_abortion = to_step_or_parallel(params.on_abortion);
     this.on_success = to_step_or_parallel(params.on_success);
   }
-  trigger(trigger: Trigger) {
+  add_trigger(trigger: Trigger) {
     if (!!this.triggers && this.triggers.length != 0) {
       this.triggers.push(trigger);
     } else {
@@ -75,6 +75,12 @@ export class Parallel {
     this.on_abortion = to_step_or_parallel(params.on_abortion);
     this.on_success = to_step_or_parallel(params.on_success);
   }
+  set_mode(mode: Mode) {
+    if (!!this.mode) {
+      this.mode = mode;
+    }
+    return this;
+  }
 }
 export class Step {
   name: string;
@@ -93,5 +99,11 @@ export class Step {
     this.on_failure = to_step_or_parallel(params.on_failure);
     this.on_abortion = to_step_or_parallel(params.on_abortion);
     this.on_success = to_step_or_parallel(params.on_success);
+  }
+  set_mode(mode: Mode) {
+    if (!!this.mode) {
+      this.mode = mode;
+    }
+    return this;
   }
 }
