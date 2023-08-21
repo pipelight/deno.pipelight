@@ -1,6 +1,6 @@
 import type { Config, Pipeline } from "./mod.ts";
 import { Docker, Container, Network } from "./mod.ts";
-import { configuration, pipeline, parallel, step, ssh } from "./mod.ts";
+import { pipeline, parallel, step, ssh } from "./mod.ts";
 
 // Global vars
 const globals = {
@@ -34,7 +34,7 @@ tests.add_trigger!({
   actions: ["manual", "pre-push"],
 });
 
-const config = configuration(() => [tests, npm]);
+const config = { pipelines: [tests, npm] };
 
 export default config;
 

@@ -2,6 +2,13 @@
 // deno run -A scripts/build_npm.ts
 // from https://github.com/denoland/dnt/
 import { build, emptyDir } from "https://deno.land/x/dnt/mod.ts";
+import $ from "https://deno.land/x/dax/mod.ts";
+
+const version = (await $`git describe --tags --abbrev=0`.text()).replace(
+  "v",
+  ""
+);
+
 await emptyDir("./npm");
 await build({
   entryPoints: ["./mod.ts"],
@@ -26,7 +33,7 @@ await build({
       "deployment",
       "typescript",
     ],
-    version: "0.6.69-2",
+    version: version,
     description: "Type definition for Pipelight",
     author: "Areskul <areskul@areskul.com>",
     license: "MIT",
