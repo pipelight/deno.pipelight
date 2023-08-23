@@ -1,5 +1,6 @@
 import { Container } from "./containers/mod.ts";
 import { Volume } from "./volumes/mod.ts";
+import { Image, get_image } from "./images/mod.ts";
 
 export const uniqBy = <T>(a: Array<T>, key: string): Array<T> => {
   let seen = new Set();
@@ -56,6 +57,10 @@ Array.prototype.get = function <T>(
   suffix: string,
   container_suffix?: string
 ): T | undefined {
+  if (this[0] instanceof Image) {
+    // @ts-ignore
+    return get_image(this, suffix);
+  }
   if (this[0] instanceof Container) {
     // @ts-ignore
     return get_container(this, suffix);
@@ -64,34 +69,6 @@ Array.prototype.get = function <T>(
     // @ts-ignore
     return get_volume(this, suffix, container_suffix!);
   }
-};
-
-// Container
-const get_container = (
-  array: Container[],
-  suffix: string
-): Container | undefined => {
-  let full_name: string;
-  if (!!array.ctx) {
-    full_name = `${array.ctx.version}.${suffix}.${array.ctx.dns}`;
-  } else {
-    full_name = suffix;
-  }
-  return array.find((e) => e.name == full_name);
-};
-// Volumes
-const get_volume = (
-  array: Volume[],
-  suffix: string,
-  container_suffix: string
-): Volume | undefined => {
-  let full_name: string;
-  if (!!array.ctx) {
-    full_name = `${array.ctx.version}_${container_suffix}_${array.ctx.dns}__${suffix}`;
-  } else {
-    full_name = suffix;
-  }
-  return array.find((e) => e.name == full_name);
 };
 
 Array.prototype.backup = function (): string[] {

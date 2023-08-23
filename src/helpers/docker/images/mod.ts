@@ -41,3 +41,17 @@ export class Image implements ImageParams {
     return cmds;
   }
 }
+
+// Image
+export const get_image = (
+  array: Image[],
+  suffix: string
+): Image | undefined => {
+  let full_name: string;
+  if (!!array.ctx) {
+    full_name = `${array.ctx.dns}/${suffix}:${array.ctx.version}`;
+  } else {
+    full_name = suffix;
+  }
+  return array.find((e) => e.name == full_name);
+};

@@ -75,10 +75,8 @@ export class Parallel {
     this.on_abortion = to_step_or_parallel(params.on_abortion);
     this.on_success = to_step_or_parallel(params.on_success);
   }
-  set_mode(mode: Mode) {
-    if (!!this.mode) {
-      this.mode = mode;
-    }
+  set_mode(mode: Mode | string) {
+    this.mode = mode;
     return this;
   }
 }
@@ -94,16 +92,15 @@ export class Step {
   constructor(params: StepParams) {
     this.name = params.name;
     this.commands = params.commands;
+    this.mode = params.mode;
     // Fallbacks
     this.on_started = to_step_or_parallel(params.on_started);
     this.on_failure = to_step_or_parallel(params.on_failure);
     this.on_abortion = to_step_or_parallel(params.on_abortion);
     this.on_success = to_step_or_parallel(params.on_success);
   }
-  set_mode(mode: Mode) {
-    if (!!this.mode) {
-      this.mode = mode;
-    }
+  set_mode(mode: Mode | string) {
+    this.mode = mode;
     return this;
   }
 }

@@ -56,6 +56,7 @@ export class Docker {
       this.hydrate(params);
     }
   }
+  //Private
   hydrate(params: DockerParams) {
     if (!!params.images) {
       for (const e of params.images) {
@@ -79,6 +80,7 @@ export class Docker {
     }
     this.dedup();
   }
+  //Private
   convert(params: DockerAutoParams) {
     const { version, dns } = params.globals;
     const docker: DockerParams = {
@@ -177,6 +179,7 @@ export class Docker {
     }
     return docker;
   }
+  //Private
   dedup() {
     type ValueOf<T> = T[keyof T];
     for (const [key, value] of Object.entries(this)) {
@@ -186,22 +189,5 @@ export class Docker {
         this[key as keyof Docker] = uniq as ValueOf<Docker>;
       }
     }
-  }
-  update(): string[] {
-    const cmds = [...this.images.create()];
-    return cmds;
-  }
-  upgrade(): string[] {
-    const cmds = [
-      // update volumes
-      ...this.volumes.create(),
-      // update networks
-      ...this.networks.remove(),
-      ...this.networks.create(),
-      // update containers
-      ...this.containers.remove(),
-      ...this.containers.create(),
-    ];
-    return cmds;
   }
 }

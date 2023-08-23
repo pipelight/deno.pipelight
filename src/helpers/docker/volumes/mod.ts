@@ -1,3 +1,5 @@
+import { Container } from "../containers/mod.ts";
+
 // Args to save volumes data to host
 export interface VolumeSave {
   source: string;
@@ -83,3 +85,18 @@ export class Volume {
     return cmds;
   }
 }
+
+// Volumes
+const get_volume = (
+  array: Volume[],
+  suffix: string,
+  container_suffix: string
+): Volume | undefined => {
+  let full_name: string;
+  if (!!array.ctx) {
+    full_name = `${array.ctx.version}_${container_suffix}_${array.ctx.dns}__${suffix}`;
+  } else {
+    full_name = suffix;
+  }
+  return array.find((e) => e.name == full_name);
+};

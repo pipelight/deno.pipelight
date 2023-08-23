@@ -19,7 +19,7 @@ Deno.test("container class simple", () => {
   assert(container);
 });
 
-Deno.test("containers array methods", () => {
+Deno.test("containers_array_methods", () => {
   const containers = [
     new Container({
       name: "my_container",
@@ -29,6 +29,6 @@ Deno.test("containers array methods", () => {
     }),
   ];
   const res = containers.create();
-  console.debug(res);
+  // console.debug(res);
   assert(res);
 });

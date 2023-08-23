@@ -119,3 +119,17 @@ export class Container implements ContainerParams {
     return cmds;
   }
 }
+
+// Container
+export const get_container = (
+  array: Container[],
+  suffix: string
+): Container | undefined => {
+  let full_name: string;
+  if (!!array.ctx) {
+    full_name = `${array.ctx.version}.${suffix}.${array.ctx.dns}`;
+  } else {
+    full_name = suffix;
+  }
+  return array.find((e) => e.name == full_name);
+};
