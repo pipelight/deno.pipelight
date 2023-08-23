@@ -5,7 +5,7 @@ import { pipeline, step, parallel } from "./mod.ts";
 import { Pipeline } from "./types/class.ts";
 import { Mode } from "./types/cast.ts";
 
-Deno.test("chain pipeline triggers declaration", () => {
+Deno.test("chain_pipeline_add_trigger_method", () => {
   const res = pipeline("test", () => [step("test", () => ["test"])])
     //First trigger
     .add_trigger({
@@ -19,11 +19,11 @@ Deno.test("chain pipeline triggers declaration", () => {
     });
 });
 
-Deno.test("step set mode with method", () => {
+Deno.test("step_set_mode_method", () => {
   const res = step("test", () => ["test"]).set_mode(Mode.StopOnFailure);
 });
 
-Deno.test("common pipeline helpers", () => {
+Deno.test("pipeline_and_step_helpers", () => {
   const instance = new Pipeline({
     name: "test",
     steps: [
@@ -52,6 +52,5 @@ Deno.test("common pipeline helpers", () => {
         step("test", () => ["test"]),
       ]),
     ]);
-
   assertEquals(instance, res);
 });
