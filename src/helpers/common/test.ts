@@ -1,11 +1,9 @@
 // Test
 import { assertEquals } from "https://deno.land/std/assert/mod.ts";
 // Self
-import { ssh } from "./mod.ts";
-// Self
 import { pipeline, step, parallel } from "./mod.ts";
-import { Pipeline } from "../../types/class.ts";
-import { Mode } from "../../types/cast.ts";
+import { Pipeline } from "./types/class.ts";
+import { Mode } from "./types/cast.ts";
 
 Deno.test("chain pipeline triggers declaration", () => {
   const res = pipeline("test", () => [step("test", () => ["test"])])
@@ -56,11 +54,4 @@ Deno.test("common pipeline helpers", () => {
     ]);
 
   assertEquals(instance, res);
-});
-
-Deno.test("ssh helper", () => {
-  const cmds = ['ssh -o TCPKeepAlive=no -C my_host "my_cmd"'];
-  const res = ssh("my_host", () => ["my_cmd"]);
-
-  assertEquals(cmds, res);
 });

@@ -1,3 +1,5 @@
+// Composition
 export { pipeline, parallel, step } from "./composition.ts";
 
-export { ssh } from "./ssh.ts";
+// Types
+export * from "./types/mod.ts";

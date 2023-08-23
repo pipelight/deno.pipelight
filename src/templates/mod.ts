@@ -1,6 +1,7 @@
 import { Docker, Container, Image } from "../../mod.ts";
 import { Pipeline, Step, Mode } from "../../mod.ts";
-import { pipeline, parallel, step, ssh } from "../../mod.ts";
+import { pipeline, parallel, step } from "../helpers/mod.ts";
+import { ssh } from "../helpers/mod.ts";
 import { v1 } from "https://deno.land/std/uuid/mod.ts";
 
 export const useTemplate = () => ({

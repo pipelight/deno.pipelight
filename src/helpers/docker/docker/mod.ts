@@ -3,20 +3,21 @@ import {
   MountVolumeParams,
   VolumeParams,
   Volume,
-  ImageAutoParams,
-  ImageParams,
-  Image,
+} from "../volumes/mod.ts";
+import { ImageAutoParams, ImageParams, Image } from "../images/mod.ts";
+import {
   MountNetworkAutoParams,
   MountNetworkParams,
   NetworkParams,
   Network,
   Port,
+} from "../networks/mod.ts";
+import { get_subnet } from "../networks/mod.ts";
+import {
   Container,
   ContainerParams,
   ContainerAutoParams,
-} from "./mod.ts";
-
-import { get_subnet } from "../../utils/index.ts";
+} from "../containers/mod.ts";
 
 export interface Globals {
   version: string;

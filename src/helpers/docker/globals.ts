@@ -1,5 +1,13 @@
-import { Container, Volume } from "../helpers/docker/mod.ts";
-import { uniqBy } from "./index.ts";
+import { Container } from "./containers/mod.ts";
+import { Volume } from "./volumes/mod.ts";
+
+export const uniqBy = <T>(a: Array<T>, key: string): Array<T> => {
+  let seen = new Set();
+  return a.filter((item) => {
+    let k: any = item[key as keyof T];
+    return seen.has(k) ? false : seen.add(k);
+  });
+};
 
 declare global {
   export interface Array<T> {

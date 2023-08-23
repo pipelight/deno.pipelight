@@ -2,13 +2,14 @@ import {
   MountVolumeAutoParams,
   MountVolumeParams,
   VolumeParams,
-  ImageAutoParams,
-  ImageParams,
+} from "../volumes/mod.ts";
+import { ImageAutoParams, ImageParams } from "../images/mod.ts";
+import {
   MountNetworkAutoParams,
   MountNetworkParams,
   PortParams,
   Port,
-} from "../mod.ts";
+} from "../networks/mod.ts";
 
 export interface ContainerAutoParams {
   suffix: string;
