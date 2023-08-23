@@ -16,7 +16,7 @@ declare global {
     dedup<T>(key?: string): Array<T>;
     remove(): string[];
     create(): string[];
-    send(remote: string[]): string[];
+    send(remote: string): string[];
     get<T>(key: string, key2?: string): T | undefined;
     backup(): string[];
     restore(): string[];
@@ -45,10 +45,10 @@ Array.prototype.create = function (): string[] {
   return commands;
 };
 // Image
-Array.prototype.send = function (hosts: string[]): string[] {
+Array.prototype.send = function (host: string): string[] {
   const commands: string[] = [];
   for (const e of this) {
-    commands.push(...e.send(hosts));
+    commands.push(...e.send(host));
   }
   return commands;
 };
