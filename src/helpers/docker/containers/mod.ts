@@ -109,14 +109,14 @@ export class Container implements ContainerParams {
     cmds.push(str);
     return cmds;
   }
-  exec(inputs: string[]): string[] {
-    const cmds: string[] = [];
-    for (const input of inputs) {
+  exec(cmds: () => string[]): string[] {
+    const wrapped_cmds: string[] = [];
+    for (const cmd of wrapped_cmds) {
       let str = `docker container exec ${this.name} \ `;
-      str += input;
-      cmds.push(str);
+      str += cmd;
+      wrapped_cmds.push(str);
     }
-    return cmds;
+    return wrapped_cmds;
   }
 }
 

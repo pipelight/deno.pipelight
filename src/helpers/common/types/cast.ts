@@ -83,4 +83,5 @@ export enum Action {
   // special flags
   Manual = "manual",
   Watch = "watch",
+  Blank = "blank",
 }
