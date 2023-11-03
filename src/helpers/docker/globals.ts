@@ -1,5 +1,5 @@
-import { Container } from "./containers/mod.ts";
-import { Volume } from "./volumes/mod.ts";
+import { Container, get_container } from "./containers/mod.ts";
+import { Volume, get_volume } from "./volumes/mod.ts";
 import { Image, get_image } from "./images/mod.ts";
 
 export const uniqBy = <T>(a: Array<T>, key: string): Array<T> => {
@@ -9,6 +9,13 @@ export const uniqBy = <T>(a: Array<T>, key: string): Array<T> => {
     return seen.has(k) ? false : seen.add(k);
   });
 };
+
+export interface Globals {
+  version: string;
+  // version: production
+  dns: string;
+  // dns: pipelight.dev
+}
 
 declare global {
   export interface Array<T> {
@@ -29,7 +36,6 @@ Array.prototype.ctx = {};
 Array.prototype.dedup = function <T>(key?: string): Array<T> {
   return uniqBy(this, !!key ? key : "name");
 };
-
 Array.prototype.remove = function (): string[] {
   const commands: string[] = [];
   for (const e of this) {

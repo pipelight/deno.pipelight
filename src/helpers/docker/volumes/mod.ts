@@ -87,7 +87,7 @@ export class Volume {
 }
 
 // Volumes
-const get_volume = (
+export const get_volume = (
   array: Volume[],
   suffix: string,
   container_suffix: string

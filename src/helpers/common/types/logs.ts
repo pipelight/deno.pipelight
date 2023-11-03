@@ -59,12 +59,14 @@ export type Command = {
 };
 export type Trigger = TriggerBranch | TriggerTag;
 export type TriggerTag = {
-  tag: string[];
+  tag?: string;
   action?: Action;
+  commit?: string;
 };
 export type TriggerBranch = {
-  tag: string[];
+  branch?: string;
   action?: Action;
+  commit?: string;
 };
 export type Event = {
   trigger: Trigger;

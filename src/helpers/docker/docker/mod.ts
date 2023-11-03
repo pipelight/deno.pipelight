@@ -18,13 +18,7 @@ import {
   ContainerParams,
   ContainerAutoParams,
 } from "../containers/mod.ts";
-
-export interface Globals {
-  version: string;
-  // version: production
-  dns: string;
-  // dns: pipelight.dev
-}
+import { Globals } from "../globals.ts";
 
 export interface DockerAutoParams {
   globals: Globals;
@@ -108,6 +102,7 @@ export class Docker {
         image: { name: `${dns}/${e.suffix}:${version}` },
         ports: e.ports,
         envs: e.envs,
+        globals: params.globals,
       };
       if (!!e.volumes) {
         container.volumes = [];
