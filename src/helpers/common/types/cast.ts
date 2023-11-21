@@ -33,11 +33,11 @@ export type Step = {
 };
 export type Trigger = TriggerBranch | TriggerTag;
 export type TriggerBranch = {
-  branches: string[];
+  branches?: string[];
   actions?: Array<Action | string>;
 };
 export type TriggerTag = {
-  tags: string[];
+  tags?: string[];
   actions?: Array<Action | string>;
 };
 export enum Mode {

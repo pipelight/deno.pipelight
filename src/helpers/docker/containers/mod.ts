@@ -10,7 +10,10 @@ import {
   PortParams,
   Port,
 } from "../networks/mod.ts";
-
+import type { Globals } from "../globals.ts";
+/**
+Parameter used in DockerAutoParams.
+*/
 export interface ContainerAutoParams {
   suffix: string;
   image?: ImageAutoParams;
@@ -19,6 +22,7 @@ export interface ContainerAutoParams {
   ports?: PortParams[];
   envs?: string[];
   args?: Record<string, string>[];
+  globals?: Globals;
 }
 export interface ContainerParams {
   name: string;
@@ -28,39 +32,41 @@ export interface ContainerParams {
   ports?: PortParams[];
   envs?: string[];
   args?: Record<string, string>[];
+  globals?: Globals;
 }
 export class Container implements ContainerParams {
   name: string;
   image: Pick<ImageParams, "name">;
   networks?: MountNetworkParams[];
   volumes?: MountVolumeParams[];
-  ports?: PortParams[];
+  ports?: Port[];
   envs?: string[];
   args?: Record<string, string>[];
+  globals?: Globals;
   constructor(params: ContainerParams) {
     this.name = params.name;
     this.image = params.image;
     this.volumes = params.volumes;
     this.networks = params.networks;
-    this.ports = params.ports;
+    if (!!params.ports) {
+      this.ports = [];
+      for (const port of params.ports) {
+        this.ports.push(new Port(port));
+      }
+    }
     // handcraft
     this.envs = params.envs;
     this.args = params.args;
+    // ctx
+    this.globals = params.globals;
   }
   // Create container and Run it
   create(): string[] {
-    let host = {
-      network: {
-        public: "0.0.0.0",
-        private: "127.0.0.1",
-      },
-    };
     const cmds: string[] = [];
     let str = `docker run \ `;
     str += `--detach \ `;
     if (!!this.ports) {
-      for (const port_params of this.ports) {
-        const port = new Port(port_params);
+      for (const port of this.ports) {
         str += `--publish ${port.ip}:${port.out}:${port.in} \ `;
       }
     }
