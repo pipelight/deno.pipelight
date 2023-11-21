@@ -1,8 +1,8 @@
 // Test
 import { assert, assertEquals } from "https://deno.land/std/assert/mod.ts";
 // Self
-import { unit } from "./mod.ts";
-import { Docker, Container } from "../../docker/mod.ts";
+import { make_unit } from "./mod.ts";
+import { Container, Docker } from "../../docker/mod.ts";
 import { Globals, Port } from "../../docker/mod.ts";
 
 const docker = new Docker({
@@ -26,14 +26,25 @@ const docker = new Docker({
   ],
 });
 
+const {
+  init_config,
+  make_route,
+  make_listener,
+} = make_unit();
 Deno.test("init configuration", () => {
-  let res = unit.init_config();
+  let res = init_config();
 });
 
 Deno.test("make routes", () => {
-  unit.make_route(docker.containers.get("front")!);
+  const res = make_route(docker.containers.get("front")!);
+  for (const cmd of res) {
+    console.log(cmd);
+  }
 });
 
 Deno.test("make listeners", () => {
-  unit.make_listener(docker.containers.get("front")!);
+  const res = make_listener(docker.containers.get("front")!);
+  for (const cmd of res) {
+    console.log(cmd);
+  }
 });
