@@ -7,10 +7,14 @@ import { ImageAutoParams, ImageParams } from "../images/mod.ts";
 import {
   MountNetworkAutoParams,
   MountNetworkParams,
-  PortParams,
   Port,
+  PortParams,
 } from "../networks/mod.ts";
 import type { Globals } from "../globals.ts";
+
+// UUID
+import { v1 } from "https://deno.land/std/uuid/mod.ts";
+
 /**
 Parameter used in DockerAutoParams.
 */
@@ -34,7 +38,9 @@ export interface ContainerParams {
   args?: Record<string, string>[];
   globals?: Globals;
 }
+
 export class Container implements ContainerParams {
+  id: string = v1.generate() as string;
   name: string;
   image: Pick<ImageParams, "name">;
   networks?: MountNetworkParams[];
@@ -102,8 +108,7 @@ export class Container implements ContainerParams {
   // Delete container
   remove(): string[] {
     const cmds: string[] = [];
-    let str =
-      `docker container stop ${this.name}` +
+    let str = `docker container stop ${this.name}` +
       " && " +
       `docker container rm ${this.name}`;
     cmds.push(str);
@@ -129,7 +134,7 @@ export class Container implements ContainerParams {
 // Container
 export const get_container = (
   array: Container[],
-  suffix: string
+  suffix: string,
 ): Container | undefined => {
   let full_name: string;
   if (!!array.ctx) {
