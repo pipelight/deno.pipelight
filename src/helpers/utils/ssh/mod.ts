@@ -2,7 +2,8 @@
 // It needs to be killed before requesting for another  -> "keepAlive = No"
 const ssh_wrapper = (host: string, cmd: string): string => {
   const suffix = "ssh -o TCPKeepAlive=no -C";
-  return `${suffix} ${host} "${cmd}"`;
+  return `${suffix} ${host} \\
+    "${cmd}"`;
 };
 export const ssh = (host: string, cmds: () => string[]): string[] => {
   const commands: string[] = [];

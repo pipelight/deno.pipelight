@@ -14,39 +14,59 @@ const make_unit = (url?: string) => {
   // Nginx-unit server url
   url = url ?? unit_default_url;
 
-  const init_config = () => {
-    const object = {
-      listeners: {},
-      routes: {},
-    };
-    const data = JSON.stringify(object);
-    const req = `curl -X PUT \ 
+  const config = {
+    init: () => {
+      const object = {
+        listeners: {},
+        routes: {},
+      };
+      const data = JSON.stringify(object);
+      const req = `curl -X PUT \  
     --data-binary '${data}' \ 
-    --unix-socket /run/nginx-unit.control.sock \ 
     ${url}/config`;
-    return req;
+      return req;
+    },
   };
-  const update_routes = (object: any) => {
-    const data = JSON.stringify(object);
-    const req = `curl -X PUT \ 
-    --data-binary '${data}' \ 
+  const routes = {
+    insert: (object: any) => {
+      const data = JSON.stringify(object);
+      const req = `curl -X PUT \
+    --data-binary '${data}' \
     ${url}/config/routes`;
-    return req;
+      return req;
+    },
   };
 
-  const update_listeners = (object: any) => {
-    const data = JSON.stringify(object);
-    const req = `curl -X PUT \ 
-    --data-binary '${data}' \ 
+  const listeners = {
+    delete: (object: any) => {
+      const data = JSON.stringify(object);
+      const req = `curl -X DELETE \
+    --data-binary '${data}' \
     ${url}/config/listeners`;
-    return req;
+      return req;
+    },
+    insert: (object: any) => {
+      const data = JSON.stringify(object);
+      const req = `curl -X PUT \
+    --data-binary '${data}' \
+    ${url}/config/listeners`;
+      return req;
+    },
   };
 
-  const update_certificates = ({ name, id }: Container) => {
-    const req = `curl -X PUT \ 
-    --data-binary @bundle_${name}.pem \ 
+  const tmp_dir = ".pipelight/tmp";
+
+  const certificate = {
+    delete: ({ name, id }: Container) => {
+      // Remove previous cert
+      return `curl -X DELETE \
     ${url}/certificates/${name}`;
-    return req;
+    },
+    insert: ({ name, id }: Container) => {
+      return `curl -X PUT \
+    --data-binary @${tmp_dir}/bundle_${name}.pem \
+    ${url}/certificates/${name}`;
+    },
   };
 
   /**
@@ -81,8 +101,8 @@ Create an nginx-unit listener.
       "127.0.0.1:443": {
         pass: `routes/${name}`,
         tls: {
-          "certificate": `${name}`
-        }
+          "certificate": `${name}`,
+        },
       },
     };
     let req = update_listeners(data);
@@ -93,19 +113,29 @@ Create an nginx-unit listener.
   */
   const make_certificates = (container: Container): string[] => {
     const name = container.name;
+    const tmp_dir = ".pipelight/tmp";
     // Generate a dummy certificate
-    const dummy_cert =
-      `openssl req -x509 -newkey rsa:4096 -keyout key_${name}.pem -out cert_${name}.pem -sha256 -days 365 -nodes -subj '/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=CommonNameOrHostname'`;
+    const dummy_cert = `openssl req \
+        -x509 -newkey rsa:4096 \
+        -sha256 \
+        -keyout ${tmp_dir}/key_${name}.pem \
+        -out ${tmp_dir}/cert_${name}.pem \
+        -days 3650 \
+        -nodes \
+        -subj '/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=example.com'`;
 
     // const bundle = `cat cert_${name}.pem ca.pem key_${name}.pem > bundle_${name}.pem`;
-    const bundle = `cat cert_${name}.pem key_${name}.pem > bundle_${name}.pem`;
+    const make_tmp_dir = "mkdir -p .pipelight/tmp";
+    const bundle =
+      `cat ${tmp_dir}/cert_${name}.pem ${tmp_dir}/key_${name}.pem > ${tmp_dir}/bundle_${name}.pem`;
     const remove_tmp_files =
-      `rm cert_${name}.pem key_${name}.pem bundle_${name}.pem`;
+      `rm ${tmp_dir}/cert_${name}.pem ${tmp_dir}/key_${name}.pem ${tmp_dir}/bundle_${name}.pem`;
 
     return [
+      make_tmp_dir,
       dummy_cert,
       bundle,
-      update_certificates(container),
+      ...update_certificates(container),
       remove_tmp_files,
     ];
   };
