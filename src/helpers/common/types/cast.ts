@@ -51,6 +51,7 @@ export type TriggerTag = {
   actions?: Array<Action | string>;
 };
 export enum LogLevel {
+  Off = "off",
   Error = "error",
   Warn = "warn",
   Info = "info",
