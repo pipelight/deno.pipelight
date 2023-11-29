@@ -1,10 +1,20 @@
 export type Config = {
   pipelines?: Pipeline[];
 };
+
+export interface PipelineOpts {
+  attach?: boolean;
+  log_level?: LogLevel | string;
+}
+
+export interface StepOpts {
+  mode?: Mode | string;
+}
 export interface Pipeline {
   name: string;
   steps: StepOrParallel[];
   triggers?: Trigger[];
+  options?: PipelineOpts;
   // Fallbacks
   on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
@@ -40,6 +50,13 @@ export type TriggerTag = {
   tags?: string[];
   actions?: Array<Action | string>;
 };
+export enum LogLevel {
+  Error = "error",
+  Warn = "warn",
+  Info = "info",
+  Debug = "debug",
+  Trace = "debug",
+}
 export enum Mode {
   StopOnFailure = "stop",
   JumpNextOnFailure = "jump_next",

@@ -1,10 +1,11 @@
 import type {
   // types
   Config as ConfigParams,
-  Pipeline as PipelineParams,
-  StepOrParallel as StepOrParallelParams,
   Parallel as ParallelParams,
+  Pipeline as PipelineParams,
+  PipelineOpts,
   Step as StepParams,
+  StepOrParallel as StepOrParallelParams,
   Trigger,
   TriggerBranch,
   TriggerTag,
@@ -17,7 +18,7 @@ import {
 
 // Transform StepOrParallel[] to Step[] or Parallel[]
 const to_step_or_parallel = (steps?: StepOrParallelParams[]) => {
-  if (!!steps) {
+  if (steps) {
     return steps.map((e) => {
       if ("parallel" in e) {
         return new Parallel(e);
@@ -38,6 +39,8 @@ export class Pipeline {
   on_failure?: StepOrParallel[];
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
+  //Options
+  options?: PipelineOpts;
   constructor(params: PipelineParams) {
     this.name = params.name;
     this.steps = to_step_or_parallel(params.steps)!;
@@ -47,6 +50,8 @@ export class Pipeline {
     this.on_failure = to_step_or_parallel(params.on_failure);
     this.on_abortion = to_step_or_parallel(params.on_abortion);
     this.on_success = to_step_or_parallel(params.on_success);
+    // Options
+    this.options = params.options;
   }
   add_trigger(trigger: Trigger) {
     if (!!this.triggers && this.triggers.length != 0) {
