@@ -1,5 +1,6 @@
 node_modules
-.pipelight/logs
 npm
 test
-deno.lock
+
+# Pipelight internals
+.pipelight

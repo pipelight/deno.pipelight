@@ -28,22 +28,29 @@ const docker = new Docker({
 
 const {
   init_config,
-  make_route,
-  make_listener,
+  make_routes,
+  make_listeners,
+  make_certificates,
 } = make_unit();
 Deno.test("init configuration", () => {
   let res = init_config();
 });
 
 Deno.test("make routes", () => {
-  const res = make_route(docker.containers.get("front")!);
+  const res = make_routes(docker.containers.get("front")!);
   for (const cmd of res) {
     console.log(cmd);
   }
 });
 
 Deno.test("make listeners", () => {
-  const res = make_listener(docker.containers.get("front")!);
+  const res = make_listeners(docker.containers.get("front")!);
+  for (const cmd of res) {
+    console.log(cmd);
+  }
+});
+Deno.test("make certificate", () => {
+  const res = make_certificates(docker.containers.get("front")!);
   for (const cmd of res) {
     console.log(cmd);
   }
