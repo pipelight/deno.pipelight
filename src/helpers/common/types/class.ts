@@ -113,7 +113,8 @@ export class Step {
   constructor(params: StepParams) {
     this.name = params.name;
     this.commands = params.commands;
-    this.options =  params.options;
+    // Options
+    this.options = params.options;
     // Fallbacks
     this.on_started = to_step_or_parallel(params.on_started);
     this.on_failure = to_step_or_parallel(params.on_failure);
