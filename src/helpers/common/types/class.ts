@@ -61,6 +61,26 @@ export class Pipeline {
     }
     return this;
   }
+  set_options(args: PipelineOpts) {
+    this.options = args;
+    return this;
+  }
+  attach() {
+    // guard
+    if (!this.options) {
+      this.options = {};
+    }
+    this.options!.attach = true;
+    return this;
+  }
+  detach() {
+    // guard
+    if (!this.options) {
+      this.options = {};
+    }
+    this.options!.attach = false;
+    return this;
+  }
 }
 export type StepOrParallel = Step | Parallel;
 export class Parallel {
