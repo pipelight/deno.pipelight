@@ -1,6 +1,12 @@
 export type Config = {
   pipelines?: Pipeline[];
+  options?: ConfigOpts;
 };
+
+export interface ConfigOpts {
+  attach?: boolean;
+  log_level?: LogLevel | string;
+}
 
 export interface PipelineOpts {
   attach?: boolean;
