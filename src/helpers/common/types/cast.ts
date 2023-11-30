@@ -1,25 +1,22 @@
-export type Config = {
-  pipelines?: Pipeline[];
-  options?: ConfigOpts;
-};
-
 export interface ConfigOpts {
   attach?: boolean;
   log_level?: LogLevel | string;
 }
+export type Config = {
+  pipelines?: Pipeline[];
+  // Options
+  options?: ConfigOpts;
+};
 
 export interface PipelineOpts {
   attach?: boolean;
   log_level?: LogLevel | string;
 }
-
-export interface StepOpts {
-  mode?: Mode | string;
-}
 export interface Pipeline {
   name: string;
   steps: StepOrParallel[];
   triggers?: Trigger[];
+  // Options
   options?: PipelineOpts;
   // Fallbacks
   on_started?: StepOrParallel[];
@@ -27,10 +24,13 @@ export interface Pipeline {
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
 }
+
+export interface StepOpts {
+  mode?: Mode | string;
+}
 export type StepOrParallel = Step | Parallel;
 export type Parallel = {
   parallel: Step[];
-  mode?: Mode | string;
   // Fallbacks
   on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
@@ -40,7 +40,8 @@ export type Parallel = {
 export type Step = {
   name: string;
   commands: string[];
-  mode?: Mode | string;
+  // Options
+  options?: StepOpts;
   // Fallbacks
   on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];

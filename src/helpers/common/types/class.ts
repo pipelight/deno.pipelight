@@ -1,10 +1,10 @@
 import type {
   // types
-  Config as ConfigParams,
   Parallel as ParallelParams,
   Pipeline as PipelineParams,
   PipelineOpts,
   Step as StepParams,
+  StepOpts,
   StepOrParallel as StepOrParallelParams,
   Trigger,
   TriggerBranch,
@@ -85,30 +85,26 @@ export class Pipeline {
 export type StepOrParallel = Step | Parallel;
 export class Parallel {
   parallel: Step[];
-  mode?: Mode | string;
   // Fallbacks
   on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
   on_success?: StepOrParallel[];
   on_abortion?: StepOrParallel[];
+
   constructor(params: ParallelParams) {
     this.parallel = params.parallel.map((e: StepParams) => new Step(e));
-    this.mode = params.mode;
     //Fallbacks
     this.on_started = to_step_or_parallel(params.on_started);
     this.on_failure = to_step_or_parallel(params.on_failure);
     this.on_abortion = to_step_or_parallel(params.on_abortion);
     this.on_success = to_step_or_parallel(params.on_success);
   }
-  set_mode(mode: Mode | string) {
-    this.mode = mode;
-    return this;
-  }
 }
 export class Step {
   name: string;
   commands: string[];
-  mode?: Mode | string;
+  //Options
+  options?: StepOpts;
   // Fallbacks
   on_started?: StepOrParallel[];
   on_failure?: StepOrParallel[];
@@ -117,7 +113,7 @@ export class Step {
   constructor(params: StepParams) {
     this.name = params.name;
     this.commands = params.commands;
-    this.mode = params.mode;
+    this.options =  params.options;
     // Fallbacks
     this.on_started = to_step_or_parallel(params.on_started);
     this.on_failure = to_step_or_parallel(params.on_failure);
@@ -125,7 +121,11 @@ export class Step {
     this.on_success = to_step_or_parallel(params.on_success);
   }
   set_mode(mode: Mode | string) {
-    this.mode = mode;
+    // guard
+    if (!this.options) {
+      this.options = {};
+    }
+    this.options.mode = mode;
     return this;
   }
 }
