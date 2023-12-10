@@ -137,7 +137,7 @@ export const get_container = (
   suffix: string,
 ): Container | undefined => {
   let full_name: string;
-  if (!!array.ctx) {
+  if (array.ctx) {
     full_name = `${array.ctx.version}.${suffix}.${array.ctx.dns}`;
   } else {
     full_name = suffix;
