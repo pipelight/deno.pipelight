@@ -73,6 +73,14 @@ export class Pipeline {
     this.options!.attach = true;
     return this;
   }
+  log_level(level: string) {
+    // guard
+    if (!this.options) {
+      this.options = {};
+    }
+    this.options!.log_level = level;
+    return this;
+  }
   detach() {
     // guard
     if (!this.options) {
