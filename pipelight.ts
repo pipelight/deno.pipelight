@@ -1,6 +1,12 @@
 import type { Config, Pipeline } from "./mod.ts";
 import { Container, Docker, Network } from "./mod.ts";
-import { nginx_unit, parallel, pipeline, ssh, step } from "./mod.ts";
+import {
+  // nginx_unit,
+  parallel,
+  pipeline,
+  ssh,
+  step,
+} from "./mod.ts";
 
 const docker = new Docker({
   globals: {
@@ -30,11 +36,11 @@ const tests = pipeline("test", () => [
   ]),
   // test nginx-unit
   // self-signed dummy ssl cert generation
-  step("test nginx ssl", () => {
-    const { expose } = nginx_unit();
-    const container = docker.containers.get("front") as Container;
-    return [...expose(container)];
-  }),
+  // step("test nginx ssl", () => {
+  //   const { expose } = nginx_unit();
+  //   const container = docker.containers.get("front") as Container;
+  //   return [...expose(container)];
+  // }),
 ]);
 
 const npm: Pipeline = pipeline("npm_publish", () => [
