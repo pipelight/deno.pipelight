@@ -1,7 +1,7 @@
 // Test
 import { assertEquals } from "https://deno.land/std/assert/mod.ts";
 // Self
-import { pipeline, step, parallel } from "./mod.ts";
+import { parallel, pipeline, step } from "./mod.ts";
 import { Pipeline } from "./types/class.ts";
 import { Mode } from "./types/cast.ts";
 
@@ -21,6 +21,10 @@ Deno.test("chain_pipeline_add_trigger_method", () => {
 
 Deno.test("step_set_mode_method", () => {
   const res = step("test", () => ["test"]).set_mode(Mode.StopOnFailure);
+});
+
+Deno.test("async_step", () => {
+  const res = step("test", async () => ["test"]).set_mode(Mode.StopOnFailure);
 });
 
 Deno.test("pipeline_and_step_helpers", () => {

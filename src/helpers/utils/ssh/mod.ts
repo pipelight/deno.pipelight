@@ -3,7 +3,7 @@
 const ssh_wrapper = (host: string, cmd: string): string => {
   const suffix = "ssh -o TCPKeepAlive=no -C";
   return `${suffix} ${host} \\
-    "${cmd}"`;
+    '${cmd}'`;
 };
 export const ssh = (host: string, cmds: () => string[]): string[] => {
   const commands: string[] = [];
