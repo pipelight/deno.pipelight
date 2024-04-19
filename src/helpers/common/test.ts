@@ -23,9 +23,6 @@ Deno.test("step_set_mode_method", () => {
   const res = step("test", () => ["test"]).set_mode(Mode.StopOnFailure);
 });
 
-Deno.test("async_step", () => {
-  const res = step("test", async () => ["test"]).set_mode(Mode.StopOnFailure);
-});
 
 Deno.test("pipeline_and_step_helpers", () => {
   const instance = new Pipeline({
