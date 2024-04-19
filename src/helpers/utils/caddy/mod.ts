@@ -7,7 +7,7 @@ import $ from "https://deno.land/x/dax/mod.ts";
 
 let port = 2019;
 
-const make_config = async (service_name: string) => {
+const make_config = async (service_name: string): Promise<string> => {
   // Get the Caddyfile as a json for further manipulations
   const fragment = await $`caddy adapt 2> /dev/null`.json();
   const configuration =
