@@ -136,7 +136,7 @@ step("send:images", ()=>
     service.docker.images.send([host])
 )
 step("create:containers:on_remote", ()=>
-    ssh([host],[
+    ssh(host,[
     ...service.docker.network.remove()
     ...service.docker.network.create()
     ...service.docker.volumes.create()

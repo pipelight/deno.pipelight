@@ -4,3 +4,4 @@ test
 
 # Pipelight internals
 .pipelight
+/target

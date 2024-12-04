@@ -1,6 +1,6 @@
 import { Container, get_container } from "./containers/mod.ts";
-import { Volume, get_volume } from "./volumes/mod.ts";
-import { Image, get_image } from "./images/mod.ts";
+import { get_volume, Volume } from "./volumes/mod.ts";
+import { get_image, Image } from "./images/mod.ts";
 
 export const uniqBy = <T>(a: Array<T>, key: string): Array<T> => {
   let seen = new Set();
@@ -61,7 +61,7 @@ Array.prototype.send = function (host: string): string[] {
 
 Array.prototype.get = function <T>(
   suffix: string,
-  container_suffix?: string
+  container_suffix?: string,
 ): T | undefined {
   if (this[0] instanceof Image) {
     // @ts-ignore
