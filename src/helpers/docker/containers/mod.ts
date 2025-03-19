@@ -12,9 +12,6 @@ import {
 } from "../networks/mod.ts";
 import type { Globals } from "../globals.ts";
 
-// UUID
-import { v1 } from "https://deno.land/std/uuid/mod.ts";
-
 /**
 Parameter used in DockerAutoParams.
 */
@@ -40,7 +37,7 @@ export interface ContainerParams {
 }
 
 export class Container implements ContainerParams {
-  id: string = v1.generate() as string;
+  id: string = crypto.randomUUID();
   name: string;
   image: Pick<ImageParams, "name">;
   networks?: MountNetworkParams[];
@@ -108,7 +105,8 @@ export class Container implements ContainerParams {
   // Delete container
   remove(): string[] {
     const cmds: string[] = [];
-    let str = `docker container stop ${this.name}` +
+    let str =
+      `docker container stop ${this.name}` +
       " && " +
       `docker container rm ${this.name}`;
     cmds.push(str);

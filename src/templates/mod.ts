@@ -2,7 +2,6 @@ import { Docker, Container, Image } from "../../mod.ts";
 import { Pipeline, Step, StepOrParallel, Mode } from "../../mod.ts";
 import { pipeline, parallel, step } from "../helpers/mod.ts";
 import { ssh } from "../helpers/mod.ts";
-import { v1 } from "https://deno.land/std/uuid/mod.ts";
 
 export const useTemplate = () => ({
   deploy,
@@ -17,8 +16,8 @@ const build_images = (docker: Docker, host?: string): Step[] => {
   for (const e of docker.images) {
     steps.push(
       step(`build image ${e.name}`, () =>
-        host ? ssh(host, () => e.create()) : e.create()
-      )
+        host ? ssh(host, () => e.create()) : e.create(),
+      ),
     );
   }
   return steps;
@@ -44,8 +43,8 @@ const ensure_networks = (docker: Docker, host?: string): Step[] => {
   for (const e of docker.networks) {
     steps.push(
       step(`ensure network ${e.name}`, () =>
-        host ? ssh(host, () => e.create()) : e.create()
-      ).set_mode(Mode.JumpNextOnFailure)
+        host ? ssh(host, () => e.create()) : e.create(),
+      ).set_mode(Mode.JumpNextOnFailure),
     );
   }
   return steps;
@@ -59,8 +58,8 @@ const ensure_volumes = (docker: Docker, host?: string): Step[] => {
   for (const e of docker.volumes) {
     steps.push(
       step(`ensure volumes ${e.name}`, () =>
-        host ? ssh(host, () => e.create()) : e.create()
-      )
+        host ? ssh(host, () => e.create()) : e.create(),
+      ),
     );
   }
   return steps;
@@ -76,8 +75,8 @@ const clean_volumes = (docker: Docker, host?: string): Step[] => {
     if (!!e.source) {
       steps.push(
         step(`clean local persisted volumes ${e.name}`, () =>
-          host ? ssh(host, () => e.remove()) : e.remove()
-        )
+          host ? ssh(host, () => e.remove()) : e.remove(),
+        ),
       );
     }
   }
@@ -98,7 +97,7 @@ const create_containers = (docker: Docker, host?: string): Step[] => {
         } else {
           return e.create();
         }
-      })
+      }),
     );
   }
   return steps;
@@ -116,7 +115,7 @@ const clean_containers = (docker: Docker, host?: string): Step[] => {
         } else {
           return e.remove();
         }
-      })
+      }),
     );
   }
   return steps;
@@ -135,7 +134,7 @@ const ensure_containers = (docker: Docker, host?: string): Step[] => {
         } else {
           return [...e.remove(), ...e.create()];
         }
-      }).set_mode(Mode.ContinueOnFailure)
+      }).set_mode(Mode.ContinueOnFailure),
     );
   }
   return steps;
@@ -151,17 +150,17 @@ const deploy = (docker: Docker, host?: string): Pipeline => {
     }
     if (!!docker.networks.length) {
       steps.push(
-        parallel(() => ensure_networks(docker, host ? host : undefined))
+        parallel(() => ensure_networks(docker, host ? host : undefined)),
       );
     }
     if (!!docker.volumes.length) {
       steps.push(
-        parallel(() => ensure_volumes(docker, host ? host : undefined))
+        parallel(() => ensure_volumes(docker, host ? host : undefined)),
       );
     }
     if (!!docker.containers.length) {
       steps.push(
-        parallel(() => ensure_containers(docker, host ? host : undefined))
+        parallel(() => ensure_containers(docker, host ? host : undefined)),
       );
     }
     return steps;
